@@ -1,10 +1,17 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NiceOne.Data;
+using NiceOne.Data.Entities;
+using NiceOne.Factory;
+using NiceOne.Services.Categories;
+using NiceOne.Services.Identity;
+using System;
 
 namespace NiceOne
 {
@@ -22,6 +29,29 @@ namespace NiceOne
             services.AddControllersWithViews();
             services.AddDbContext<NiceOneDbContext>
                 (item => item.UseSqlServer(Configuration.GetConnectionString("myconn")));
+            
+            services.AddHttpContextAccessor();
+            services.AddIdentity<User, IdentityRole>(opt =>
+                {
+                    opt.Password.RequiredLength = 7;
+                    opt.Password.RequireDigit = false;
+                    opt.Password.RequireUppercase = false;
+                    opt.Password.RequireNonAlphanumeric = false;
+
+                    opt.User.RequireUniqueEmail = true;
+                })
+                .AddEntityFrameworkStores<NiceOneDbContext>()
+                .AddDefaultTokenProviders();
+            services.Configure<DataProtectionTokenProviderOptions>(opt =>
+                    opt.TokenLifespan = TimeSpan.FromHours(2));
+
+            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<IIdentityService, IdentityService>();
+            services.AddTransient<ICurrentUserService, CurrentUserService>();
+            services.AddControllersWithViews();
+            services.AddAutoMapper(typeof(Startup));
+
+            services.AddScoped<IUserClaimsPrincipalFactory<User>, CustomClaimsFactory>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -40,6 +70,7 @@ namespace NiceOne
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

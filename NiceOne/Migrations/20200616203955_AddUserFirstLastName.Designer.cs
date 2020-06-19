@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NiceOne.Data;
 
 namespace NiceOne.Migrations
 {
     [DbContext(typeof(NiceOneDbContext))]
-    partial class NiceOneDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200616203955_AddUserFirstLastName")]
+    partial class AddUserFirstLastName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,22 +46,6 @@ namespace NiceOne.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "79719083-5890-40db-a941-a14f6f7aa825",
-                            ConcurrencyStamp = "3616e7f8-c203-459e-be16-5bf3d32d9f52",
-                            Name = "Visitor",
-                            NormalizedName = "VISITOR"
-                        },
-                        new
-                        {
-                            Id = "4c3e00b9-2d17-4c04-b7ec-96ff804eb894",
-                            ConcurrencyStamp = "5be2559c-86bb-416d-997b-8db195fd322f",
-                            Name = "Administrator",
-                            NormalizedName = "ADMINISTRATOR"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
