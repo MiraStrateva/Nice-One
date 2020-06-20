@@ -10,7 +10,10 @@ using NiceOne.Data;
 using NiceOne.Data.Entities;
 using NiceOne.Factory;
 using NiceOne.Services.Categories;
+using NiceOne.Services.Cities;
+using NiceOne.Services.Countries;
 using NiceOne.Services.Identity;
+using NiceOne.Services.Places;
 using System;
 
 namespace NiceOne
@@ -46,6 +49,9 @@ namespace NiceOne
                     opt.TokenLifespan = TimeSpan.FromHours(2));
 
             services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<ICountryService, CountryService>();
+            services.AddTransient<ICityService, CityService>();
+            services.AddTransient<IPlaceService, PlaceService>();
             services.AddTransient<IIdentityService, IdentityService>();
             services.AddTransient<ICurrentUserService, CurrentUserService>();
             services.AddControllersWithViews();

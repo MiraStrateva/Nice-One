@@ -14,6 +14,16 @@ namespace NiceOne.Services.Categories
         {
         }
 
+        public async Task<IEnumerable<CategoryGetModel>> GetAsync()
+        {
+            var result = await this.GetAllAsync();
+            return result.Select(c => new CategoryGetModel()
+            {
+                Id = c.Id,
+                Name = c.Name
+            });
+        }
+
         public async Task<IEnumerable<CategoryGetModel>> GetAllOrderedByPlacesAsync()
         {
             var result = await this

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -11,18 +12,16 @@ namespace NiceOne.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly ICategoryService _categoryService;
+        private readonly ICategoryService categoryService;
 
-        public HomeController(ILogger<HomeController> logger, ICategoryService service)
+        public HomeController(ICategoryService service)
         {
-            _logger = logger;
-            _categoryService = service;
+            categoryService = service;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            List<CategoryGetModel> result = new List<CategoryGetModel>(_categoryService.GetAllOrderedByPlacesAsync().Result);
+            List<CategoryGetModel> result = new List<CategoryGetModel>(await categoryService.GetAllOrderedByPlacesAsync());
             return View(result);
         }
         

@@ -54,6 +54,9 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Place" asp-action="MyFeedbacks">My Feedbacks</a>
                                 </li>
                             }
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Place" asp-action="Create">Add Place</a>
+                            </li>
                         }
 
                         @if (!(User.Identity.IsAuthenticated && UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "Administrator").Result))
@@ -64,7 +67,7 @@
                                 </form>
                             </li>
                         }
-                        </ul>
+                    </ul>
                 </div>
                 
             </div>

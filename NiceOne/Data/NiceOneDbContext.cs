@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using NiceOne.Data.Entities;
 using System.Reflection;
-using Microsoft.Extensions.Hosting;
 
 namespace NiceOne.Data
 {

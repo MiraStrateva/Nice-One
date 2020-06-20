@@ -10,7 +10,7 @@ namespace NiceOne.Services
 {
     public class BaseService<TEntity> : IBaseService<TEntity> where TEntity:class
     {
-        private NiceOneDbContext Data;
+        public readonly NiceOneDbContext Data;
         public BaseService(NiceOneDbContext data)
             => Data = data;
 
