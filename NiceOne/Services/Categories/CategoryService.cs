@@ -1,4 +1,5 @@
-﻿using NiceOne.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using NiceOne.Data;
 using NiceOne.Data.Entities;
 using NiceOne.DTOs.Categories;
 using System.Collections.Generic;
@@ -26,16 +27,17 @@ namespace NiceOne.Services.Categories
 
         public async Task<IEnumerable<CategoryGetModel>> GetAllOrderedByPlacesAsync()
         {
-            var result = await this
-                    .GetAllAsync(orderBy: c => c.Places.Count, ascending: false);
-            return result.Select(c => new CategoryGetModel()
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Description = c.Description,
-                ImageUrl = c.ImageUrl,
-                PlacesCount = c.Places.Count
-            });
+            return await this.Data.Categories
+                    .OrderByDescending(c => c.Places.Count)
+                    .Select(c => new CategoryGetModel()
+                    {
+                        Id = c.Id,
+                        Name = c.Name,
+                        Description = c.Description,
+                        ImageUrl = c.ImageUrl,
+                        PlacesCount = c.Places.Count
+                    })
+                    .ToArrayAsync();
         }
     }
 }

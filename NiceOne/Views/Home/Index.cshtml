@@ -13,7 +13,7 @@
             <img src=@Model[i].ImageUrl style="object-fit: cover; width: 100%; height: 200px">
             <p class="lead">@Model[i].Description</p>
             <p class="text-decoration-none">Places in category: @Model[i].PlacesCount</p>
-            @Html.ActionLink("View places", "ByCategory", "Places", new { categoryId = @Model[i].Id }, new { Area = "" })
+            @Html.ActionLink("View places", "ByCategory", "Place", new { categoryId = @Model[i].Id }, new { Area = "" })
         </div>
         }
     </div>

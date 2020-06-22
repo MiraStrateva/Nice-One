@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace NiceOne.DTOs.Places
+﻿namespace NiceOne.DTOs.Places
 {
     public class PlaceListGetModel
     {
-        public int Id { get; }
-        public string Name { get; }
-        public string Description { get; }
-        public string CategoryName { get; }
-        public string City { get; }
-        public string Country { get; }
-        public decimal Rating { get; }
-        public int FeedbackCount { get; }
-        public string ImageUrl { get; } 
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string CategoryName { get; set; }
+        public string City { get; set; }
+        public string Country { get; set; }
+        public decimal Rating { get; set; }
+        public int FeedbackCount { get; set; }
+        public string ImageUrl { get; set; }
     }
 }

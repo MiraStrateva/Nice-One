@@ -10,6 +10,7 @@ using NiceOne.Services.Cities;
 using NiceOne.Services.Countries;
 using NiceOne.Services.Places;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace NiceOne.Controllers
@@ -52,11 +53,16 @@ namespace NiceOne.Controllers
             if (this.ModelState.IsValid)
             {
                 await this.placeService.CreateAsync(placeSetModel);
-                return this.RedirectToPage("Home");
-                    //.RedirectToAction("All");
+                return RedirectToAction(nameof(HomeController.Index), "Home");
             }
 
             return this.View(placeSetModel);
+        }
+
+        public async Task<IActionResult> ByCategory(int categoryId)
+        {
+            var places = this.placeService.GetByCategory(categoryId).Result;
+            return this.View("List", places);
         }
 
         public async Task<JsonResult> GetCities(int countryId)
