@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace NiceOne.Data.Entities
+﻿namespace NiceOne.Data.Entities
 {
+    using System.Collections.Generic;
+
     public class Country
     {
         public int Id { get; set; }

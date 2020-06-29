@@ -1,14 +1,16 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using NiceOne.Data.Entities;
-using NiceOne.Models;
-using NiceOne.Services.Identity;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-
-namespace NiceOne.Controllers
+﻿namespace NiceOne.Controllers
 {
+    using AutoMapper;
+
+    using Microsoft.AspNetCore.Mvc;
+
+    using NiceOne.Data.Entities;
+    using NiceOne.Models;
+    using NiceOne.Services.Identity;
+
+    using System.Linq;
+    using System.Threading.Tasks;
+
     public class AccountController : Controller
     {
         private readonly IMapper mapper;

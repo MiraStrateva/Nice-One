@@ -1,17 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore;
-using NiceOne.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-
-namespace NiceOne.Services
+﻿namespace NiceOne.Services
 {
-    public class BaseService<TEntity> : IBaseService<TEntity> where TEntity:class
+    using Microsoft.EntityFrameworkCore;
+
+    using NiceOne.Data;
+
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
+
+    public abstract class BaseService<TEntity> : IBaseService<TEntity> 
+        where TEntity : class
     {
-        public readonly NiceOneDbContext Data;
-        public BaseService(NiceOneDbContext data)
+        protected NiceOneDbContext Data { get; }
+        protected BaseService(NiceOneDbContext data)
             => Data = data;
 
         public async Task<TEntity> FindAsync(int id)
@@ -43,6 +46,18 @@ namespace NiceOne.Services
         {
             this.Data.Update(entity);
             await this.Data.SaveChangesAsync();
+        }
+
+        public async Task CreateAsync(TEntity entity)
+        {
+            Data.Set<TEntity>().Add(entity);
+            await Data.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(TEntity entity)
+        {
+            Data.Set<TEntity>().Remove(entity);
+            await Data.SaveChangesAsync();
         }
     }
 }

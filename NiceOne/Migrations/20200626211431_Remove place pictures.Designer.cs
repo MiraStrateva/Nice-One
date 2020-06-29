@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NiceOne.Data;
 
 namespace NiceOne.Migrations
 {
     [DbContext(typeof(NiceOneDbContext))]
-    partial class NiceOneDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200626211431_Remove place pictures")]
+    partial class Removeplacepictures
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

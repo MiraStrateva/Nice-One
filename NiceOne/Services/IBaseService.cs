@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-
-namespace NiceOne.Services
+﻿namespace NiceOne.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
+
     public interface IBaseService<TEntity> 
         where TEntity : class
     {
@@ -14,5 +14,6 @@ namespace NiceOne.Services
             Expression<Func<TEntity, object>> orderBy = null,
             bool ascending = true);
         Task SaveAsync(TEntity entity);
+        Task CreateAsync(TEntity entity);
     }
 }

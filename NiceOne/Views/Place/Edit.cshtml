@@ -1,15 +1,12 @@
 ﻿@model NiceOne.DTOs.Places.PlaceSetModel
 
 @{
-    ViewData["Title"] = "Create Place";
+    ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <script src="/lib/jquery/dist/jquery.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        var items = "<option value = '0'>Select</option>";
-        $('#CityId').html(items);
-
         $('#CountryId').change(function () {
             var url = '@Url.Content("~/")' + "Place/GetCities";
             var ddlsource = "#CountryId";
@@ -23,14 +20,15 @@
             });
         });
     });
-    
+
 </script>
-<h1>Create Place</h1>
+<h1>Edit</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -44,13 +42,13 @@
             <div class="form-group">
                 <label asp-for="CategoryId" class="control-label"></label>
                 <select asp-for="CategoryId"
-                        class="form-control" id="CategoryId" 
-                        asp-items="@(new SelectList(@ViewBag.ListOfCategory, "Id", "Name", @ViewBag.CategoryId))"></select>
+                        class="form-control"
+                        asp-items="@(new SelectList(@ViewBag.ListOfCategory, "Id", "Name"))"></select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CountryId" class="control-label"></label>
-                <select asp-for="CountryId" 
+                <select asp-for="CountryId"
                         class="form-control" id="CountryId" name="CountryId"
                         asp-items="@(new SelectList(@ViewBag.ListOfCountry, "Id", "Name"))"></select>
                 <span asp-validation-for="CountryId" class="text-danger"></span>
@@ -59,14 +57,18 @@
                 <label asp-for="CityId" class="control-label"></label>
                 <select asp-for="CityId"
                         class="form-control" id="CityId" name="CityId"
-                        asp-items="@(new SelectList(string.Empty, "Id", "Name"))"></select>
+                        asp-items="@(new SelectList(@ViewBag.ListOfCities, "Id", "Name"))"></select>
                 <span asp-validation-for="CityId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" action="Create" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
+</div>
+
+<div>
+    @Html.ActionLink("Back to List", "ByCategory", "Place", new { categoryId = @Model.CategoryId }, new { Area = "" })
 </div>
 
 @section Scripts {

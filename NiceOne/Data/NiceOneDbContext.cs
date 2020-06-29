@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using NiceOne.Data.Entities;
-using System.Reflection;
-
-namespace NiceOne.Data
+﻿namespace NiceOne.Data
 {
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
+    using NiceOne.Data.Entities;
+
+    using System.Reflection;
+
     public class NiceOneDbContext : IdentityDbContext<User>
     {
         public NiceOneDbContext(DbContextOptions<NiceOneDbContext> options)
@@ -17,8 +19,6 @@ namespace NiceOne.Data
         public DbSet<Place> Places { get; set; }
 
         public DbSet<Feedback> Feedbacks { get; set; }
-
-        public DbSet<Picture> Pictures { get; set; }
 
         public DbSet<Country> Countries { get; set; }
 

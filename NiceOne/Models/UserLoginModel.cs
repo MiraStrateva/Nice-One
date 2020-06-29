@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace NiceOne.Models
+﻿namespace NiceOne.Models
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class UserLoginModel
     {
         [Required]

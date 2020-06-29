@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using NiceOne.DTOs.Categories;
-using NiceOne.Models;
-using NiceOne.Services.Categories;
-
-namespace NiceOne.Controllers
+﻿namespace NiceOne.Controllers
 {
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Threading.Tasks;
+
+    using Microsoft.AspNetCore.Mvc;
+
+    using NiceOne.DTOs.Categories;
+    using NiceOne.Models;
+    using NiceOne.Services.Categories;
+
     public class HomeController : Controller
     {
         private readonly ICategoryService categoryService;
@@ -24,12 +25,6 @@ namespace NiceOne.Controllers
             return View(result);
         }
         
-        [Authorize]
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

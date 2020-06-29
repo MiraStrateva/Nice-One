@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace NiceOne.DTOs.Places
+﻿namespace NiceOne.DTOs.Places
 {
+    using System;
+
     public class PlaceFeedbackGetModel
     {
-        public string Text { get; }
-        public int Rating { get; }
-        public DateTime Date { get; }
-        public string User { get; }
+        public int Id { get; set; }
+        public string Text { get; set; }
+        public int Rating { get; set; }
+        public DateTime Date { get; set; }
+        public string User { get; set; }
     }
 }

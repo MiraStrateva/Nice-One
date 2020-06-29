@@ -15,6 +15,13 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Category\" />
+    <Folder Include="Views\Country\" />
+    <Folder Include="Views\City\" />
+    <Folder Include="wwwroot\images\" />
+  </ItemGroup>
+
 
 
 </Project>

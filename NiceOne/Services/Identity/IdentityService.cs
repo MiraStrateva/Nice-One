@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
-using NiceOne.Data.Entities;
-using System.Threading.Tasks;
-
-namespace NiceOne.Services.Identity
+﻿namespace NiceOne.Services.Identity
 {
+    using Microsoft.AspNetCore.Identity;
+
+    using NiceOne.Data.Entities;
+
+    using System.Threading.Tasks;
+
     public class IdentityService : IIdentityService
     {
         private readonly UserManager<User> userManager;

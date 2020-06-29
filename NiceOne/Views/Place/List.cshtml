@@ -1,15 +1,21 @@
-﻿@model IEnumerable<NiceOne.DTOs.Places.PlaceListGetModel>
+﻿@using NiceOne.Data.Entities
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
+@model IEnumerable<NiceOne.DTOs.Places.PlaceListGetModel>
 
 @{
     ViewData["Title"] = "List";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>List</h1>
-
+<h1>List of @ViewBag.CategoryName</h1>
+@if (User.Identity.IsAuthenticated)
+{
 <p>
-    <a asp-action="Create">Create New</a>
+    @*<a asp-action="Create" asp-route-id="@ViewBag.CategoryId">Create New</a>*@
+    @Html.ActionLink("Create New", "Create", "Place", new { categoryId = @ViewBag.CategoryId }, new { Area = "" })
 </p>
+}
 <table class="table">
     <thead>
         <tr>
@@ -34,45 +40,47 @@
             <th>
                 @Html.DisplayNameFor(model => model.FeedbackCount)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImageUrl)
-            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CategoryName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Country)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rating)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FeedbackCount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImageUrl)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.City)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Country)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rating)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FeedbackCount)
+                </td>
+                <td>
+                    @if (User.Identity.IsAuthenticated && UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "Administrator").Result)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit |</a>
+                    }
+                    <a asp-action="Details" asp-route-id="@item.Id"> Details </a> |
+                    <a asp-action="Feedbacks" asp-route-id="@item.Id"> Feedbacks </a> |
+                    @if(User.Identity.IsAuthenticated && UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "Administrator").Result)
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id"> Delete </a>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

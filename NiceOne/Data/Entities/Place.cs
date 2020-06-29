@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace NiceOne.Data.Entities
+﻿namespace NiceOne.Data.Entities
 {
+    using System.Collections.Generic;
+
     public class Place
     {
         public int Id { get; set; }
@@ -12,6 +12,5 @@ namespace NiceOne.Data.Entities
         public int CityId { get; set; }
         public City City { get; set; }
         public ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
-        public ICollection<Picture> Pictures { get; set; } = new List<Picture>();
     }
 }

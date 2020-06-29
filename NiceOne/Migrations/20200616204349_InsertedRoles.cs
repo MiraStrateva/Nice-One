@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace NiceOne.Migrations
+﻿namespace NiceOne.Migrations
 {
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     public partial class InsertedRoles : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Server.IIS.Core;
-using System.Runtime.CompilerServices;
-
-namespace NiceOne.Data.Entities
+﻿namespace NiceOne.Data.Entities
 {
+    using Microsoft.AspNetCore.Identity;
+
     public class User : IdentityUser
     {
         public string FirstName { get; set; }

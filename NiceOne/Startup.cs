@@ -1,23 +1,26 @@
-using AutoMapper;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using NiceOne.Data;
-using NiceOne.Data.Entities;
-using NiceOne.Factory;
-using NiceOne.Services.Categories;
-using NiceOne.Services.Cities;
-using NiceOne.Services.Countries;
-using NiceOne.Services.Identity;
-using NiceOne.Services.Places;
-using System;
-
 namespace NiceOne
 {
+    using AutoMapper;
+
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
+
+    using NiceOne.Data;
+    using NiceOne.Data.Entities;
+    using NiceOne.Factory;
+    using NiceOne.Services.Categories;
+    using NiceOne.Services.Cities;
+    using NiceOne.Services.Countries;
+    using NiceOne.Services.Identity;
+    using NiceOne.Services.Places;
+
+    using System;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)

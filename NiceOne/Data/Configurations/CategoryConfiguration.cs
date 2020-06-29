@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using NiceOne.Data.Constants;
-using NiceOne.Data.Entities;
-
-namespace NiceOne.Data.Configurations
+﻿namespace NiceOne.Data.Configurations
 {
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+    using NiceOne.Data.Constants;
+    using NiceOne.Data.Entities;
+
     public class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {
         public void Configure(EntityTypeBuilder<Category> builder)

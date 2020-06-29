@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace NiceOne.Data.Entities
+﻿namespace NiceOne.Data.Entities
 {
+    using System;
+
     public class Feedback
     {
         public int Id { get; set; }

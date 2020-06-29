@@ -1,8 +1,9 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace NiceOne.Migrations
+﻿namespace NiceOne.Migrations
 {
+    using System;
+
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     public partial class seeddata : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
