@@ -13,7 +13,7 @@
     using NiceOne.Services.Cities;
     using NiceOne.Services.Countries;
     using NiceOne.Services.Places;
-
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Security.Claims;
@@ -54,8 +54,8 @@
             categotyList.Insert(0, new CategoryGetModel { Id = 0, Name = "Select" });
             ViewBag.ListOfCategory = categotyList;
 
-            List<CountryGetModel> countryList = new List<CountryGetModel>(await countryService.GetAsync());
-            countryList.Insert(0, new CountryGetModel { Id = 0, Name = "Select" });
+            List<CountryModel> countryList = new List<CountryModel>(await countryService.GetAsync());
+            countryList.Insert(0, new CountryModel { Id = 0, Name = "Select" });
             ViewBag.ListOfCountry = countryList;
 
             return View();
@@ -84,12 +84,12 @@
             categotyList.Insert(0, new CategoryGetModel { Id = 0, Name = "Select" });
             ViewBag.ListOfCategory = categotyList;
 
-            List<CountryGetModel> countryList = new List<CountryGetModel>(await countryService.GetAsync());
-            countryList.Insert(0, new CountryGetModel { Id = 0, Name = "Select" });
+            List<CountryModel> countryList = new List<CountryModel>(await countryService.GetAsync());
+            countryList.Insert(0, new CountryModel { Id = 0, Name = "Select" });
             ViewBag.ListOfCountry = countryList;
 
-            List<CityGetModel> cityList = new List<CityGetModel>(await cityService.GetCitiesByCountryAsync(place.CountryId));
-            cityList.Insert(0, new CityGetModel { Id = 0, Name = "Select" });
+            List<CityModel> cityList = new List<CityModel>(await cityService.GetCitiesByCountryAsync(place.CountryId));
+            cityList.Insert(0, new CityModel { Id = 0, Name = "Select" });
             ViewBag.ListOfCities = cityList;
 
             return View(mapper.Map<PlaceSetModel>(place));
@@ -116,7 +116,7 @@
         }
 
         [Authorize]
-        public async Task<IActionResult> Delete(int id)
+        public IActionResult Delete(int id)
         {
             return this.View(id);
         }
@@ -140,21 +140,24 @@
         [Authorize]
         public async Task<IActionResult> MyPlaces()
         {
-            var places = this.placeService.GetByUserAsync(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value).Result;
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            var places = await this.placeService.GetByUserAsync(userId);
+
+            ViewBag.UserName = User.Claims.FirstOrDefault(c => c.Type.Equals("FirstName", StringComparison.OrdinalIgnoreCase)).Value;
             return View("List", places);
         }
 
         [Authorize]
         public async Task<IActionResult> All()
         {
-            var places = this.placeService.AllAysnc().Result;
+            var places = await this.placeService.AllAysnc();
             return View("List", places);
         }
 
         public async Task<JsonResult> GetCities(int countryId)
         {
-            var cityList = new List<CityGetModel>(await cityService.GetCitiesByCountryAsync(countryId));
-            cityList.Insert(0, new CityGetModel { Id = 0, Name = "Select" });
+            var cityList = new List<CityModel>(await cityService.GetCitiesByCountryAsync(countryId));
+            cityList.Insert(0, new CityModel { Id = 0, Name = "Select" });
 
             return Json(new SelectList(cityList, "Id", "Name"));
         }

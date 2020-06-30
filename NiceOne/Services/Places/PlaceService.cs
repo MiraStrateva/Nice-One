@@ -17,26 +17,15 @@
         {
         }
 
-        public async Task<Place> FindAsync(int id)
-            => await this.Data.Places
-                .FirstOrDefaultAsync(c => c.Id == id);
-
-        public async Task CreateAsync(Place place)
-        {
-            Data.Places.Add(place);
-            await Data.SaveChangesAsync();
-        }
-
         public async Task DeleteAsync(int id)
         {
             var place = new Place { Id = id };
-            Data.Places.Remove(place);
-            await Data.SaveChangesAsync();
+            await this.DeleteAsync(place);
         }
 
         public async Task<IEnumerable<PlaceListGetModel>> GetByCategoryAsync(int categoryId)
         {
-            return this.Data.Places
+            return await this.Data.Places
                 .Where(p => p.CategoryId == categoryId)
                 .OrderBy(p => p.City.Country.Name)
                 .ThenBy(p => p.City.Name)
@@ -51,12 +40,13 @@
                     Country = p.City.Country.Name,
                     Rating = p.Feedbacks.Select(f => f.Rating).Average(),
                     FeedbackCount = p.Feedbacks.Count
-                });
+                })
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<PlaceListGetModel>> AllAysnc ()
         {
-            return this.Data.Places
+            return await this.Data.Places
                 .OrderBy(p => p.Category)
                 .ThenBy(p => p.City.Country.Name)
                 .ThenBy(p => p.City.Name)
@@ -71,7 +61,8 @@
                     Country = p.City.Country.Name,
                     Rating = p.Feedbacks.Select(f => f.Rating).Average(),
                     FeedbackCount = p.Feedbacks.Count
-                });
+                })
+                .ToListAsync();
         }
 
         public async Task<PlaceGetModel> GetByIdAsync(int placeId)
@@ -105,7 +96,7 @@
 
         public async Task<IEnumerable<PlaceListGetModel>> GetByUserAsync(string userId)
         {
-            return this.Data.Places
+            return await this.Data.Places
                 .Where(p => p.Feedbacks.Any(f => f.UserId == userId))
                 .OrderBy(p => p.Category)
                 .ThenBy(p => p.City.Country.Name)
@@ -121,7 +112,8 @@
                     Country = p.City.Country.Name,
                     Rating = p.Feedbacks.Select(f => f.Rating).Average(),
                     FeedbackCount = p.Feedbacks.Count
-                });
+                })
+                .ToListAsync();
         }
     }
 }

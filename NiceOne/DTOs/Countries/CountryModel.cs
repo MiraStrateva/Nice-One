@@ -1,6 +1,6 @@
-﻿namespace NiceOne.DTOs.Cities
+﻿namespace NiceOne.DTOs.Countries
 {
-    public class CityGetModel
+    public class CountryModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

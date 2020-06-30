@@ -16,9 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DTOs\Feedbacks\" />
     <Folder Include="Views\Category\" />
     <Folder Include="Views\Country\" />
-    <Folder Include="Views\City\" />
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 

@@ -4,6 +4,8 @@
 
     using NiceOne.Data.Entities;
     using NiceOne.DTOs.Categories;
+    using NiceOne.DTOs.Cities;
+    using NiceOne.DTOs.Countries;
     using NiceOne.DTOs.Places;
     using NiceOne.Models;
 
@@ -20,6 +22,12 @@
             CreateMap<Category, CategoryGetModel>();
             CreateMap<CategorySetModel, Category>();
             CreateMap<CategoryGetModel, CategorySetModel>();
+
+            CreateMap<Country, CountryModel>();
+            CreateMap<CountryModel, Country>();
+
+            CreateMap<City, CityModel>();
+            CreateMap<CityModel, City>();
         }
     }
 }

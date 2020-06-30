@@ -38,7 +38,7 @@
         }
 
         [Authorize]
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
             return View();
         }
@@ -105,7 +105,7 @@
         }
 
         [Authorize]
-        public async Task<IActionResult> Delete(int id)
+        public IActionResult Delete(int id)
         {
             return this.View(id);
         }
