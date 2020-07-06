@@ -6,6 +6,7 @@
     using NiceOne.DTOs.Categories;
     using NiceOne.DTOs.Cities;
     using NiceOne.DTOs.Countries;
+    using NiceOne.DTOs.Feedbacks;
     using NiceOne.DTOs.Places;
     using NiceOne.Models;
 
@@ -28,6 +29,11 @@
 
             CreateMap<City, CityModel>();
             CreateMap<CityModel, City>();
+
+            CreateMap<Feedback, FeedbackGetModel>()
+                .ForMember(f => f.Place, opt => opt.MapFrom(x => x.Place.Name));
+            CreateMap<FeedbackSetModel, Feedback>();
+            CreateMap<FeedbackGetModel, FeedbackSetModel>();
         }
     }
 }

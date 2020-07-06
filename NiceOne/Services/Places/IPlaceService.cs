@@ -11,6 +11,7 @@
         Task<IEnumerable<PlaceListGetModel>> GetByCategoryAsync(int categoryId);
         Task<IEnumerable<PlaceListGetModel>> AllAysnc();
         Task<IEnumerable<PlaceListGetModel>> GetByUserAsync(string userId);
+        Task<IEnumerable<PlaceListGetModel>> SearchPlacesAsync(string search);
         Task<PlaceGetModel> GetByIdAsync(int placeId);
         Task DeleteAsync(int id);
     }

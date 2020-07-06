@@ -16,6 +16,7 @@ namespace NiceOne
     using NiceOne.Services.Categories;
     using NiceOne.Services.Cities;
     using NiceOne.Services.Countries;
+    using NiceOne.Services.Feedbacks;
     using NiceOne.Services.Identity;
     using NiceOne.Services.Places;
 
@@ -57,6 +58,7 @@ namespace NiceOne
             services.AddTransient<IPlaceService, PlaceService>();
             services.AddTransient<IIdentityService, IdentityService>();
             services.AddTransient<ICurrentUserService, CurrentUserService>();
+            services.AddTransient<IFeedbackService, FeedbackService>();
             services.AddControllersWithViews();
             services.AddAutoMapper(typeof(Startup));
 

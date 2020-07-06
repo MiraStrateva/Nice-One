@@ -12,7 +12,7 @@
 
     public class PlaceService : BaseService<Place>, IPlaceService
     {
-        public PlaceService(NiceOneDbContext data) 
+        public PlaceService(NiceOneDbContext data)
             : base(data)
         {
         }
@@ -44,7 +44,7 @@
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<PlaceListGetModel>> AllAysnc ()
+        public async Task<IEnumerable<PlaceListGetModel>> AllAysnc()
         {
             return await this.Data.Places
                 .OrderBy(p => p.Category)
@@ -71,7 +71,7 @@
                 .Where(p => p.Id == placeId)
                 .Select(p => new PlaceGetModel
                 {
-                    Id  = p.Id,
+                    Id = p.Id,
                     Name = p.Name,
                     Description = p.Description,
                     CategoryId = p.CategoryId,
@@ -82,14 +82,14 @@
                     CountryName = p.City.Country.Name,
                     Rating = p.Feedbacks.Select(f => f.Rating).Average(),
                     FeedbackCount = p.Feedbacks.Count(),
-                    Feedbacks = p.Feedbacks.Select(f => new PlaceFeedbackGetModel   
-                                                {   
-                                                    Id = f.Id,
-                                                    Text = f.Text,
-                                                    Rating = f.Rating, 
-                                                    Date = f.Date,
-                                                    User = string.Concat(f.User.FirstName, f.User.LastName)
-                                                })
+                    Feedbacks = p.Feedbacks.Select(f => new PlaceFeedbackGetModel
+                    {
+                        Id = f.Id,
+                        Text = f.Text,
+                        Rating = f.Rating,
+                        Date = f.Date,
+                        User = f.User == null ? "Anonymous" : string.Concat(f.User.FirstName, " ", f.User.LastName)
+                    })
                 })
                 .FirstOrDefaultAsync();
         }
@@ -98,6 +98,32 @@
         {
             return await this.Data.Places
                 .Where(p => p.Feedbacks.Any(f => f.UserId == userId))
+                .OrderBy(p => p.Category)
+                .ThenBy(p => p.City.Country.Name)
+                .ThenBy(p => p.City.Name)
+                .ThenBy(p => p.Name)
+                .Select(p => new PlaceListGetModel
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    CategoryName = p.Category.Name,
+                    City = p.City.Name,
+                    Country = p.City.Country.Name,
+                    Rating = p.Feedbacks.Select(f => f.Rating).Average(),
+                    FeedbackCount = p.Feedbacks.Count
+                })
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<PlaceListGetModel>> SearchPlacesAsync(string search)
+        {
+            return await this.Data.Places
+                .Where(p => p.City.Name.Contains(search)
+                            || p.City.Country.Name.Contains(search)
+                            || p.Category.Name.Contains(search)
+                            || p.Name.Contains(search)
+                            || p.Description.Contains(search))
                 .OrderBy(p => p.Category)
                 .ThenBy(p => p.City.Country.Name)
                 .ThenBy(p => p.City.Name)

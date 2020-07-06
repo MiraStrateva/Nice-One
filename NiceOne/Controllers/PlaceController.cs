@@ -8,10 +8,12 @@
     using NiceOne.DTOs.Categories;
     using NiceOne.DTOs.Cities;
     using NiceOne.DTOs.Countries;
+    using NiceOne.DTOs.Feedbacks;
     using NiceOne.DTOs.Places;
     using NiceOne.Services.Categories;
     using NiceOne.Services.Cities;
     using NiceOne.Services.Countries;
+    using NiceOne.Services.Feedbacks;
     using NiceOne.Services.Places;
     using System;
     using System.Collections.Generic;
@@ -26,17 +28,20 @@
         private readonly ICategoryService categoryService;
         private readonly ICountryService countryService;
         private readonly ICityService cityService;
+        private readonly IFeedbackService feedbackService;
         public PlaceController(IMapper mapper,
             IPlaceService placeService, 
             ICategoryService categoryService, 
             ICountryService countryService,
-            ICityService cityService)
+            ICityService cityService,
+            IFeedbackService feedbackService)
         {
             this.mapper = mapper;
             this.placeService = placeService;
             this.categoryService = categoryService;
             this.countryService = countryService;
             this.cityService = cityService;
+            this.feedbackService = feedbackService;
         }
 
         public async Task<IActionResult> Details(int Id)
@@ -147,6 +152,19 @@
             return View("List", places);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SearchPlaces(string search = null)
+        {
+            if (!string.IsNullOrEmpty(search))
+            {
+                var foundPlaces = await placeService.SearchPlacesAsync(search);
+                return View("List", foundPlaces);
+            }
+
+            var places = await placeService.AllAysnc();
+            return View("List", places);
+        }
+
         [Authorize]
         public async Task<IActionResult> All()
         {
@@ -160,6 +178,30 @@
             cityList.Insert(0, new CityModel { Id = 0, Name = "Select" });
 
             return Json(new SelectList(cityList, "Id", "Name"));
+        }
+
+        public IActionResult AddFeedback(int placeId)
+        {
+            var model = new FeedbackSetModel { PlaceId = placeId };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddFeedback(FeedbackSetModel feedbackModel)
+        {
+            if (this.ModelState.IsValid)
+            {
+                var feedback = mapper.Map<Feedback>(feedbackModel);
+                feedback.Date = DateTime.Now;
+                if (User.Claims.Any(c => c.Type == ClaimTypes.NameIdentifier))
+                {
+                    feedback.UserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
+                }
+                await this.feedbackService.CreateAsync(feedback);
+                return RedirectToAction(nameof(PlaceController.Details), new { Id = feedbackModel.PlaceId});
+            }
+
+            return View(feedbackModel);
         }
     }
 }

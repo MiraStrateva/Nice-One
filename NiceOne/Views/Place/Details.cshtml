@@ -47,7 +47,22 @@
             @Html.DisplayNameFor(model => model.Rating)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Rating)
+            <span class="rating">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    var starClass = "star";
+                    if (Math.Round(@Model.Rating, 0) == (6 - i))
+                    {
+                        starClass += " active";
+                    }
+                    <span data-value="@(6 - i)" class="@starClass"></span>
+                }
+            </span>
+            <span class="score">
+                @Model.Rating
+            </span>
+            @*<input asp-for="Rating" class="form-control" />*@
+            <span asp-validation-for="Rating" class="text-danger"></span>
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.FeedbackCount)
@@ -57,13 +72,14 @@
         </dd>
     </dl>
 </div>
+<partial name="_PlaceFeedbacks" for="Feedbacks" />
 <div>
     @if (User.Identity.IsAuthenticated && UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "Administrator").Result)
     {
         <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
         <br />
     }
-    <a asp-action="Feedbacks" asp-route-id="@Model.Id">Feedbacks</a>
+    @Html.ActionLink("Add Feedback", "AddFeedback", "Place", new { placeId = @Model.Id})
     <br />
     @Html.ActionLink("Back to List", "ByCategory", "Place", new { categoryId = @Model.CategoryId })
 </div>
