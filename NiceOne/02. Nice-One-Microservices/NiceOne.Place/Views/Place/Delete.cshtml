@@ -1,0 +1,11 @@
+﻿@model int
+
+@{
+    ViewData["Title"] = "Delete Place";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Are you sure you want do delete this place?</h1>
+
+<a class="btn btn-danger" asp-controller="Place" asp-action="ConfirmDelete" asp-route-id="@Model">Yes</a>
+<a class="btn btn-default" asp-controller="Place" asp-action="Details" asp-route-id="@Model">No</a>

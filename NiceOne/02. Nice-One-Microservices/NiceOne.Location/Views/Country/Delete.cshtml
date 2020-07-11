@@ -1,0 +1,9 @@
+﻿@model int
+
+@{ ViewData["Title"] = "Delete Country";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<h1>Are you sure you want do delete this country?</h1>
+
+<a class="btn btn-danger" asp-controller="Country" asp-action="ConfirmDelete" asp-route-id="@Model">Yes</a>
+<a class="btn btn-default" asp-controller="Country" asp-action="All">No</a>

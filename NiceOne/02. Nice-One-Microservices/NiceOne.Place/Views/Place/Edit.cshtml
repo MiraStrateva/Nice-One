@@ -1,0 +1,76 @@
+﻿@model NiceOne.Place.DTOs.Places.PlaceSetModel
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="/lib/jquery/dist/jquery.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#CountryId').change(function () {
+            var url = '@Url.Content("~/")' + "Place/GetCities";
+            var ddlsource = "#CountryId";
+            $.getJSON(url, { countryId: $(ddlsource).val() }, function (data) {
+                var items = '';
+                $("#CityId").empty();
+                $.each(data, function (i, city) {
+                    items += "<option value='" + city.value + "'>" + city.text + "</option>";
+                });
+                $("#CityId").html(items);
+            });
+        });
+    });
+
+</script>
+<h1>Edit</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CategoryId" class="control-label"></label>
+                <select asp-for="CategoryId"
+                        class="form-control"
+                        asp-items="@(new SelectList(@ViewBag.ListOfCategory, "Id", "Name"))"></select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CountryId" class="control-label"></label>
+                <select asp-for="CountryId"
+                        class="form-control" id="CountryId" name="CountryId"
+                        asp-items="@(new SelectList(@ViewBag.ListOfCountry, "Id", "Name"))"></select>
+                <span asp-validation-for="CountryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CityId" class="control-label"></label>
+                <select asp-for="CityId"
+                        class="form-control" id="CityId" name="CityId"
+                        asp-items="@(new SelectList(@ViewBag.ListOfCities, "Id", "Name"))"></select>
+                <span asp-validation-for="CityId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    @Html.ActionLink("Back to List", "ByCategory", "Place", new { categoryId = @Model.CategoryId }, new { Area = "" })
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

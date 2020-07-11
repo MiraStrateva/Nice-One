@@ -1,0 +1,11 @@
+﻿@model int
+
+@{
+    ViewData["Title"] = "Delete Feedback";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Are you sure you want do delete your feedback?</h1>
+
+<a class="btn btn-danger" asp-controller="Feedback" asp-action="ConfirmDelete" asp-route-id="@Model">Yes</a>
+<a class="btn btn-default" asp-controller="Feedback" asp-action="AllByUser">No</a>

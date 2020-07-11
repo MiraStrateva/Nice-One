@@ -1,0 +1,54 @@
+﻿@model NiceOne.Place.DTOs.Feedbacks.FeedbackSetModel
+
+@{
+    ViewData["Title"] = "AddFeedback";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit Feedback</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Text" class="control-label"></label>
+                <input asp-for="Text" class="form-control" />
+                <span asp-validation-for="Text" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Rating" class="control-label"></label>
+                <span class="rating">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        var starClass = "star";
+                        if (Model.Rating == 6 - i)
+                        {
+                            starClass += " active";
+                        }
+                        <span data-value="@(6 - i)" class="@starClass"></span>
+                    }
+                </span>
+                <input asp-for="Rating" class="form-control" />
+                <span asp-validation-for="Rating" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="hidden" asp-for="PlaceId" class="form-control" />
+                <span asp-validation-for="PlaceId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="Feedback" asp-action="AllByUser" >Back to My Feedbacks</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/rating.js"></script>
+}

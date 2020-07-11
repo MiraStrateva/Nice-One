@@ -1,0 +1,9 @@
+﻿@model int
+
+@{ ViewData["Title"] = "Delete Category";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<h1>Are you sure you want do delete this category?</h1>
+
+<a class="btn btn-danger" asp-controller="Category" asp-action="ConfirmDelete" asp-route-id="@Model">Yes</a>
+<a class="btn btn-default" asp-controller="Category" asp-action="Details" asp-route-id="@Model">No</a>

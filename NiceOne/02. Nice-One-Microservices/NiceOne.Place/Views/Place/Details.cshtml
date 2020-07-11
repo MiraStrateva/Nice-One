@@ -1,0 +1,83 @@
+﻿@using NiceOne.Services.Identity
+@inject ICurrentUserService CurrentUserService
+@model NiceOne.Place.DTOs.Places.PlaceGetModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CategoryName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CategoryName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CityName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CityName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CountryName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CountryName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Rating)
+        </dt>
+        <dd class="col-sm-10">
+            <span class="rating">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    var starClass = "star";
+                    if (Math.Round(@Model.Rating, 0) == (6 - i))
+                    {
+                        starClass += " active";
+                    }
+                    <span data-value="@(6 - i)" class="@starClass"></span>
+                }
+            </span>
+            <span class="score">
+                @Model.Rating
+            </span>
+            <span asp-validation-for="Rating" class="text-danger"></span>
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FeedbackCount)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.FeedbackCount)
+        </dd>
+    </dl>
+</div>
+<partial name="_PlaceFeedbacks" for="Feedbacks" />
+<div>
+    @if (CurrentUserService.UserId != null && CurrentUserService.UserRole == "Administrator")
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+        <br />
+    }
+    @Html.ActionLink("Add Feedback", "AddFeedback", "Place", new { placeId = @Model.Id})
+    <br />
+    @Html.ActionLink("Back to List", "ByCategory", "Place", new { categoryId = @Model.CategoryId })
+</div>
