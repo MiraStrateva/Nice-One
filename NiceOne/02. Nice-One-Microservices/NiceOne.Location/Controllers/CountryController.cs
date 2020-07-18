@@ -2,16 +2,18 @@
 {
     using AutoMapper;
 
-    using Microsoft.AspNetCore.Authorization;
+    using System.Threading.Tasks;
+
     using Microsoft.AspNetCore.Mvc;
+
     using NiceOne.Controllers;
+    using NiceOne.Infrastructure;
     using NiceOne.Location.Data.Entities;
-    using NiceOne.Location.DTOs.Cities;
-    using NiceOne.Location.DTOs.Countries;
+    using NiceOne.Location.Models.Cities;
+    using NiceOne.Location.Models.Countries;
     using NiceOne.Location.Services.Cities;
     using NiceOne.Location.Services.Countries;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
+    using Microsoft.AspNetCore.Authorization;
 
     public class CountryController : ApiController
     {
@@ -25,34 +27,17 @@
             this.cityService = cityService;
             this.mapper = mapper;
         }
-
-        [Authorize]
+        
         [Route(nameof(All))]
         public async Task<IActionResult> All()
-        {
-            var countries = await countryService.GetAsync();
-            return Ok(countries);
-            // return View("List", countries);
-        }
+            => Ok(await countryService.GetAsync());
 
-        [Authorize] 
-        [Route(nameof(Cities))]
-        public async Task<IActionResult> Cities(int countryId)
-        {
-            ViewBag.CountryId = countryId;
-            var cities = await cityService.GetCitiesByCountryAsync(countryId);
-            return View("Cities", cities);
-        }
-
-        [Authorize]
-        [Route(nameof(Create))]
-        public IActionResult Create()
-        {
-            return View();
-        }
+        [Route(nameof(GetById) + PathSeparator + Id)]
+        public async Task<IActionResult> GetById(int id)
+            => Ok(await countryService.GetByIdAsync(id));
 
         [HttpPost]
-        [Authorize]
+        //[AuthorizeAdministrator]
         [Route(nameof(Create))]
         public async Task<IActionResult> Create(CountryModel countryModel)
         {
@@ -60,25 +45,16 @@
             {
                 var country = mapper.Map<Country>(countryModel);
                 await this.countryService.CreateAsync(country);
-                return RedirectToAction(nameof(CountryController.All));
+                return Ok();
             }
 
-            return View(countryModel);
+            return BadRequest("Model is not valid.");
         }
 
-        [Authorize]
-        [Route(nameof(Edit))]
-        public async Task<IActionResult> Edit(int Id)
-        {
-            var country = await countryService.GetByIdAsync(Id);
-
-            return View(mapper.Map<CountryModel>(country));
-        }
-
-        [HttpPost]
-        [Authorize]
-        [Route(nameof(Edit))]
-        public async Task<IActionResult> Edit(CountryModel countryModel)
+        [HttpPut]
+        //[Authorize]
+        [Route(Id)]
+        public async Task<IActionResult> Edit(int id, CountryModel countryModel)
         {
             if (this.ModelState.IsValid)
             {
@@ -87,41 +63,31 @@
                 country.Name = countryModel.Name;
 
                 await this.countryService.SaveAsync(country);
-                return RedirectToAction(nameof(CountryController.All));
+                return Ok();
             }
 
-            return View(countryModel);
+            return BadRequest("Model is not valid."); 
         }
 
-        [Authorize]
-        [Route(nameof(Delete))]
-        public IActionResult Delete(int id)
-        {
-            return this.View(id);
-        }
-
-        [Authorize]
-        [Route(nameof(ConfirmDelete))]
+        //[AuthorizeAdministrator]
+        [Route(nameof(ConfirmDelete) + PathSeparator + Id)]
         public async Task<IActionResult> ConfirmDelete(int Id)
         {
             await this.countryService.DeleteAsync(Id);
-            return RedirectToAction(nameof(CountryController.All));
+            return Ok();
         }
 
+        [HttpGet]
+        [Route(nameof(Cities) + PathSeparator + Id)]
+        public async Task<IActionResult> Cities(int id)
+            => Ok(await cityService.GetCitiesByCountryAsync(id));
 
-        [Authorize]
-        [Route(nameof(CreateCity))]
-        public async Task<IActionResult> CreateCity(int countryId)
-        {
-            List<CountryModel> countryList = new List<CountryModel>(await countryService.GetAsync());
-            countryList.Insert(0, new CountryModel { Id = 0, Name = "Select" });
-            ViewBag.ListOfCountry = countryList;
-
-            return View(new CityModel { CountryId = countryId });
-        }
+        [Route(nameof(GetCityById) + PathSeparator + Id)]
+        public async Task<IActionResult> GetCityById(int id)
+            => Ok(await cityService.GetByIdAsync(id));
 
         [HttpPost]
-        [Authorize]
+        //[AuthorizeAdministrator]
         [Route(nameof(CreateCity))]
         public async Task<IActionResult> CreateCity(CityModel cityModel)
         {
@@ -129,25 +95,16 @@
             {
                 var city = mapper.Map<City>(cityModel);
                 await this.cityService.CreateAsync(city);
-                return RedirectToAction(nameof(CountryController.Cities), new { countryId = city.CountryId });
+                return Ok();
             }
 
-            return View(cityModel);
-        }
-
-        [Authorize]
-        [Route(nameof(EditCity))]
-        public async Task<IActionResult> EditCity(int Id)
-        {
-            var city = await cityService.GetByIdAsync(Id);
-
-            return View(mapper.Map<CityModel>(city));
+            return BadRequest("Model is not valid.");
         }
 
         [HttpPost]
-        [Authorize]
-        [Route(nameof(EditCity))]
-        public async Task<IActionResult> EditCity(CityModel cityModel)
+        //[AuthorizeAdministrator]
+        [Route(nameof(EditCity) + PathSeparator + Id)]
+        public async Task<IActionResult> EditCity(int id, CityModel cityModel)
         {
             if (this.ModelState.IsValid)
             {
@@ -156,26 +113,18 @@
                 city.Name = cityModel.Name;
 
                 await cityService.SaveAsync(city);
-                return RedirectToAction(nameof(CountryController.Cities), new { countryId = city.CountryId });
+                return Ok();
             }
 
-            return View(cityModel);
+            return BadRequest("Model is not valid.");
         }
 
-        [Authorize]
-        [Route(nameof(DeleteCity))]
-        public IActionResult DeleteCity(int id)
-        {
-            return this.View(id);
-        }
-
-        [Authorize]
-        [Route(nameof(ConfirmCityDelete))]
+        //[AuthorizeAdministrator]
+        [Route(nameof(ConfirmCityDelete)+PathSeparator+Id)]
         public async Task<IActionResult> ConfirmCityDelete(int Id)
         {
-            var city = await cityService.FindAsync(Id);
             await this.cityService.DeleteAsync(Id);
-            return RedirectToAction(nameof(CountryController.Cities), new { countryId = city.CountryId });
+            return Ok();
         }
     }
 }

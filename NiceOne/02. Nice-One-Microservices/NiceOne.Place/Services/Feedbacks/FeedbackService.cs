@@ -4,7 +4,7 @@
     using Microsoft.EntityFrameworkCore;
     using NiceOne.Place.Data;
     using NiceOne.Place.Data.Entities;
-    using NiceOne.Place.DTOs.Feedbacks;
+    using NiceOne.Place.Models.Feedbacks;
     using NiceOne.Services;
     using System.Collections.Generic;
     using System.Linq;

@@ -91,6 +91,9 @@ namespace NiceOne.Place.Data.Migrations
                     b.Property<string>("CityName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("CountryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("CountryName")
                         .HasColumnType("nvarchar(max)");
 

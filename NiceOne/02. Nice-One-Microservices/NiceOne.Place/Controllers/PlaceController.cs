@@ -3,19 +3,17 @@
     using AutoMapper;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Rendering;
     using NiceOne.Controllers;
+    using NiceOne.Infrastructure;
     using NiceOne.Place.Data.Entities;
-    using NiceOne.Place.DTOs.Categories;
-    using NiceOne.Place.DTOs.Feedbacks;
-    using NiceOne.Place.DTOs.Places;
+    using NiceOne.Place.Models.Feedbacks;
+    using NiceOne.Place.Models.Places;
     using NiceOne.Place.Services.Categories;
     using NiceOne.Place.Services.Feedbacks;
     using NiceOne.Place.Services.Places;
     using NiceOne.Services.Identity;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
     public class PlaceController : ApiController
@@ -39,29 +37,9 @@
             this.currentUserService = currentUserService;
         }
 
-        [Route(nameof(Details))]
+        [Route(nameof(Details) + PathSeparator + Id)]
         public async Task<IActionResult> Details(int Id)
-        {
-            var place = await this.placeService.GetByIdAsync(Id);
-            return View("Details", place);
-        }
-
-        [Authorize]
-        [Route(nameof(Create))]
-        public async Task<IActionResult> Create(int categoryId)
-        {
-            ViewBag.CategoryId = categoryId; 
-
-            List<CategoryGetModel> categotyList = new List<CategoryGetModel>(await categoryService.GetAsync());
-            categotyList.Insert(0, new CategoryGetModel { Id = 0, Name = "Select" });
-            ViewBag.ListOfCategory = categotyList;
-
-            //List<CountryModel> countryList = new List<CountryModel>(await countryService.GetAsync());
-            //countryList.Insert(0, new CountryModel { Id = 0, Name = "Select" });
-            //ViewBag.ListOfCountry = countryList;
-
-            return View();
-        }
+            => Ok(await this.placeService.GetByIdAsync(Id));
 
         [HttpPost]
         [Authorize]
@@ -72,127 +50,73 @@
             {
                 var place = mapper.Map<Place>(placeSetModel);
                 await this.placeService.CreateAsync(place);
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return Ok();
             }
 
-            return View(placeSetModel);
-        }
-
-        [Authorize]
-        [Route(nameof(Edit))]
-        public async Task<IActionResult> Edit(int Id)
-        {
-            var place = await placeService.GetByIdAsync(Id);
-
-            List<CategoryGetModel> categotyList = new List<CategoryGetModel>(await categoryService.GetAsync());
-            categotyList.Insert(0, new CategoryGetModel { Id = 0, Name = "Select" });
-            ViewBag.ListOfCategory = categotyList;
-
-            //List<CountryModel> countryList = new List<CountryModel>(await countryService.GetAsync());
-            //countryList.Insert(0, new CountryModel { Id = 0, Name = "Select" });
-            //ViewBag.ListOfCountry = countryList;
-
-            //List<CityModel> cityList = new List<CityModel>(await cityService.GetCitiesByCountryAsync(place.CountryId));
-            //cityList.Insert(0, new CityModel { Id = 0, Name = "Select" });
-            //ViewBag.ListOfCities = cityList;
-
-            return View(mapper.Map<PlaceSetModel>(place));
+            return BadRequest("Model is not valid");
         }
 
         [HttpPost]
-        [Authorize]
-        [Route(nameof(Edit))]
-        public async Task<IActionResult> Edit(PlaceSetModel placeSetModel)
+        //[Authorize]
+        [Route(nameof(Edit) + PathSeparator + Id)]
+        public async Task<IActionResult> Edit(int id, PlaceSetModel placeSetModel)
         {
             if (this.ModelState.IsValid)
             {
-                var place = await this.placeService.FindAsync(placeSetModel.Id);
+                var place = await this.placeService.FindAsync(id);
 
                 place.Name = placeSetModel.Name;
                 place.Description = placeSetModel.Description;
                 place.CategoryId = placeSetModel.CategoryId;
                 place.CityId = placeSetModel.CityId;
+                place.CityName = placeSetModel.CityName;
+                place.CountryId = placeSetModel.CountryId;
+                place.CountryName = placeSetModel.CountryName;
 
                 await this.placeService.SaveAsync(place);
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return Ok();
             }
 
-            return View(placeSetModel);
+            return BadRequest("Model is not valid");
         }
 
-        [Authorize]
-        [Route(nameof(Delete))]
-        public IActionResult Delete(int id)
-        {
-            return this.View(id);
-        }
-
-        [Authorize]
-        [Route(nameof(ConfirmDelete))]
+        //[Authorize]
+        [Route(nameof(ConfirmDelete) + PathSeparator + Id)]
         public async Task<IActionResult> ConfirmDelete(int Id)
         {
             await this.placeService.DeleteAsync(Id);
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return Ok();
         }
 
-        [Route(nameof(ByCategory))]
-        public async Task<IActionResult> ByCategory(int categoryId)
-        {
-            ViewBag.CategoryId = categoryId;
-            ViewBag.CategoryName = categoryService.GetCategoryName(categoryId);
-
-            var places = await placeService.GetByCategoryAsync(categoryId);
-            return View("List", places);
-        }
+        [Route(nameof(ByCategory) + PathSeparator + Id)]
+        public async Task<IActionResult> ByCategory(int id)
+            => Ok(await placeService.GetByCategoryAsync(id));
 
         [Authorize]
         [Route(nameof(MyPlaces))]
         public async Task<IActionResult> MyPlaces()
-        {
-            var places = await this.placeService.GetByUserAsync(this.currentUserService.UserId);
-
-            ViewBag.UserName = this.currentUserService.FirstName;
-            return View("List", places);
-        }
+            => Ok(await this.placeService.GetByUserAsync(this.currentUserService.UserId));
 
         [HttpPost]
         [Route(nameof(SearchPlaces))]
         public async Task<IActionResult> SearchPlaces(string search = null)
         {
+            IEnumerable<PlaceListGetModel> places = default;
+            
             if (!string.IsNullOrEmpty(search))
             {
-                var foundPlaces = await placeService.SearchPlacesAsync(search);
-                return View("List", foundPlaces);
+                places = await placeService.SearchPlacesAsync(search);
             }
 
-            var places = await placeService.AllAysnc();
-            return View("List", places);
+            places = await placeService.AllAysnc();
+
+            return Ok(places);
         }
 
-        [Authorize]
+        [AuthorizeAdministrator]
         [Route(nameof(All))]
         public async Task<IActionResult> All()
-        {
-            var places = await this.placeService.AllAysnc();
-            return View("List", places);
-        }
-
-        [Route(nameof(GetCities))]
-        public async Task<JsonResult> GetCities(int countryId)
-        {
-            //var cityList = new List<CityModel>(await cityService.GetCitiesByCountryAsync(countryId));
-            //cityList.Insert(0, new CityModel { Id = 0, Name = "Select" });
-            var cityList = new List<string>();
-
-            return Json(new SelectList(cityList, "Id", "Name"));
-        }
-
-        [Route(nameof(AddFeedback))]
-        public IActionResult AddFeedback(int placeId)
-        {
-            var model = new FeedbackSetModel { PlaceId = placeId };
-            return View(model);
-        }
+            => Ok(await this.placeService.AllAysnc());
 
         [HttpPost]
         [Route(nameof(AddFeedback))]
@@ -207,10 +131,10 @@
                     feedback.UserId = this.currentUserService.UserId;
                 }
                 await this.feedbackService.CreateAsync(feedback);
-                return RedirectToAction(nameof(PlaceController.Details), new { Id = feedbackModel.PlaceId});
+                return Ok();
             }
 
-            return View(feedbackModel);
+            return BadRequest("Model is not valid"); 
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     using NiceOne.Location.Data;
     using NiceOne.Location.Data.Entities;
-    using NiceOne.Location.DTOs.Cities;
+    using NiceOne.Location.Models.Cities;
     using NiceOne.Services;
     using System.Collections.Generic;
     using System.Threading.Tasks;

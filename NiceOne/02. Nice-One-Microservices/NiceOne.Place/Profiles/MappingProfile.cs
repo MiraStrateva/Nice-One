@@ -3,25 +3,22 @@
     using AutoMapper;
 
     using NiceOne.Place.Data.Entities;
-    using NiceOne.Place.DTOs.Categories;
-    using NiceOne.Place.DTOs.Feedbacks;
-    using NiceOne.Place.DTOs.Places;
+    using NiceOne.Place.Models.Categories;
+    using NiceOne.Place.Models.Feedbacks;
+    using NiceOne.Place.Models.Places;
 
     public class MappingProfile : Profile
     {
         public MappingProfile()
         {
             CreateMap<PlaceSetModel, Place>();
-            CreateMap<PlaceGetModel, PlaceSetModel>();
 
             CreateMap<Category, CategoryGetModel>();
             CreateMap<CategorySetModel, Category>();
-            CreateMap<CategoryGetModel, CategorySetModel>();
 
             CreateMap<Feedback, FeedbackGetModel>()
                 .ForMember(f => f.Place, opt => opt.MapFrom(x => x.Place.Name));
             CreateMap<FeedbackSetModel, Feedback>();
-            CreateMap<FeedbackGetModel, FeedbackSetModel>();
         }
     }
 }

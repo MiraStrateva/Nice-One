@@ -4,7 +4,7 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using NiceOne.Controllers;
-    using NiceOne.Place.DTOs.Feedbacks;
+    using NiceOne.Place.Models.Feedbacks;
     using NiceOne.Place.Services.Feedbacks;
     using NiceOne.Services.Identity;
     using System;
@@ -25,26 +25,18 @@
             this.currentUserService = currentUserService;
         }
 
-        [Authorize]
+        //[Authorize]
         [Route(nameof(AllByUser))]
         public async Task<IActionResult> AllByUser()
-        {
-            var feedbacks = await feedbackService.GetByUserAsync(this.currentUserService.UserId);
-            return View("List", feedbacks);
-        }
+            => Ok(await feedbackService.GetByUserAsync(this.currentUserService.UserId));
 
-        [Authorize]
-        [Route(nameof(Edit))]
-        public async Task<IActionResult> Edit(int Id)
-        {
-            var feedback = await feedbackService.GetByIdAsync(Id);
-
-            return View(mapper.Map<FeedbackSetModel>(feedback));
-        }
+        [Route(nameof(AllByPlace) + PathSeparator + Id)]
+        public async Task<IActionResult> AllByPlace(int id)
+            => Ok(await feedbackService.GetByPlaceAsync(id));
 
         [HttpPost]
-        [Authorize]
-        [Route(nameof(Edit))]
+        //[Authorize]
+        [Route(nameof(Edit) + PathSeparator + Id)]
         public async Task<IActionResult> Edit(FeedbackSetModel feedbackModel)
         {
             if (this.ModelState.IsValid)
@@ -56,25 +48,18 @@
                 feedback.Date = DateTime.Now;
 
                 await this.feedbackService.SaveAsync(feedback);
-                return RedirectToAction(nameof(FeedbackController.AllByUser));
+                return Ok();
             }
 
-            return View(feedbackModel);
+            return BadRequest("Model is not valid.");
         }
 
-        [Authorize]
-        [Route(nameof(Delete))]
-        public IActionResult Delete(int id)
-        {
-            return this.View(id);
-        }
-
-        [Authorize]
-        [Route(nameof(ConfirmDelete))]
+        //[Authorize]
+        [Route(nameof(ConfirmDelete) + PathSeparator + Id)]
         public async Task<IActionResult> ConfirmDelete(int Id)
         {
             await this.feedbackService.DeleteAsync(Id);
-            return RedirectToAction(nameof(FeedbackController.AllByUser));
+            return Ok();
         }
     }
 }

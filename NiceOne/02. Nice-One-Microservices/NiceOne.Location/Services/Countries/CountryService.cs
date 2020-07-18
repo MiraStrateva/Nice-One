@@ -4,7 +4,7 @@
     using Microsoft.EntityFrameworkCore;
     using NiceOne.Location.Data;
     using NiceOne.Location.Data.Entities;
-    using NiceOne.Location.DTOs.Countries;
+    using NiceOne.Location.Models.Countries;
     using NiceOne.Services;
     using System.Collections.Generic;
     using System.Threading.Tasks;

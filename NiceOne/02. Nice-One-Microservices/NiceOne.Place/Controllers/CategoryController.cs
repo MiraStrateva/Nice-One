@@ -6,8 +6,9 @@
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using NiceOne.Controllers;
+    using NiceOne.Infrastructure;
     using NiceOne.Place.Data.Entities;
-    using NiceOne.Place.DTOs.Categories;
+    using NiceOne.Place.Models.Categories;
     using NiceOne.Place.Services.Categories;
     using System.IO;
     using System.Threading.Tasks;
@@ -24,32 +25,23 @@
             this.env = env;
         }
 
-        [Authorize]
+        public async Task<IActionResult> Index()
+            => Ok(await categoryService.GetAllOrderedByPlacesAsync());
+        
         [Route(nameof(All))]
         public async Task<IActionResult> All()
-        {
-            var categories = await categoryService.GetAsync();
-            return Ok(categories);
-            //return View("List", categories);
-        }
-
-        [Authorize]
-        [Route(nameof(Details))]
+            => Ok(await categoryService.GetAsync());
+                
+        [Route(nameof(Details) + PathSeparator + Id)]
         public async Task<IActionResult> Details(int Id)
-        {
-            var category = await categoryService.GetByIdAsync(Id);
-            return View(category);
-        }
+            => Ok(await categoryService.GetByIdAsync(Id));
 
-        [Authorize]
-        [Route(nameof(Create))]
-        public IActionResult Create()
-        {
-            return View();
-        }
+        [Route(nameof(CategoryName) + PathSeparator + Id)]
+        public IActionResult CategoryName(int id)
+            => Ok(categoryService.GetCategoryName(id));
 
         [HttpPost]
-        [Authorize]
+        //[AuthorizeAdministrator]
         [Route(nameof(Create))]
         public async Task<IActionResult> Create(CategorySetModel categorySetModel)
         {
@@ -68,24 +60,15 @@
 
                 var category = mapper.Map<Category>(categorySetModel);
                 await this.categoryService.CreateAsync(category);
-                return RedirectToAction(nameof(CategoryController.All));
+                return Ok();
             }
 
-            return View(categorySetModel);
-        }
-
-        [Authorize]
-        [Route(nameof(Edit))]
-        public async Task<IActionResult> Edit(int Id)
-        {
-            var category = await categoryService.GetByIdAsync(Id);
-
-            return View(mapper.Map<CategorySetModel>(category));
+            return BadRequest("Model is not valid");
         }
 
         [HttpPost]
-        [Authorize]
-        [Route(nameof(Edit))]
+        //[AuthorizeAdministrator]
+        [Route(nameof(Edit) + PathSeparator + Id)]
         public async Task<IActionResult> Edit(CategorySetModel categorySetModel)
         {
             if (this.ModelState.IsValid)
@@ -106,25 +89,18 @@
                 }
 
                 await this.categoryService.SaveAsync(category);
-                return RedirectToAction(nameof(CategoryController.All));
+                return Ok();
             }
 
-            return View(categorySetModel);
+            return BadRequest("Model is not valid"); 
         }
 
-        [Authorize]
-        [Route(nameof(Delete))]
-        public IActionResult Delete(int id)
-        {
-            return this.View(id);
-        }
-
-        [Authorize]
-        [Route(nameof(ConfirmDelete))]
+        //[AuthorizeAdministrator]
+        [Route(nameof(ConfirmDelete) + PathSeparator + Id)]
         public async Task<IActionResult> ConfirmDelete(int Id)
         {
             await this.categoryService.DeleteAsync(Id);
-            return RedirectToAction(nameof(CategoryController.All));
+            return Ok();
         }
     }
 }

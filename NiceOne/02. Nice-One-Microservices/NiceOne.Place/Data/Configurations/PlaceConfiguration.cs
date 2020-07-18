@@ -21,6 +21,9 @@
 
             builder.Property(p => p.CityId)
                 .IsRequired();
+
+            builder.Property(p => p.CountryId)
+                .IsRequired();
         }
     }
 }

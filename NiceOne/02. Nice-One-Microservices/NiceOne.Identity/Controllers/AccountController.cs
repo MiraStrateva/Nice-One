@@ -8,6 +8,7 @@
     using NiceOne.Identity.Models;
     using NiceOne.Identity.Services;
     using NiceOne.Services.Identity;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Security.Authentication;
     using System.Threading.Tasks;
@@ -25,67 +26,34 @@
             this.currentUserService = currentUserService;
         }
 
-        [HttpGet]
-        [Route(nameof(Register))]
-        public IActionResult Register()
-        {
-            return View();
-        }
-
         [HttpPost]
         [Route(nameof(Register))]
-        public async Task<IActionResult> Register(UserRegistrationModel input)
+        public async Task<ActionResult<LoginOutputModel>> Register(UserRegistrationModel input)
         {
             var user = mapper.Map<User>(input);
             var result = await identityService.RegisterAsync(user, input.Password);
+
             if (!result.Succeeded)
             {
-                foreach (var error in result.Errors)
-                {
-                    ModelState.TryAddModelError(error.Code, error.Description);
-                }
-
-                return View(input);
+                return BadRequest(result.Errors);
             }
             return await Login(new UserLoginModel { 
                 Email = input.Email, 
                 Password = input.Password});
         }
 
-        [HttpGet]
-        [Route(nameof(Login))]
-        public IActionResult Login(string returnUrl = null)
-        {
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
-        }
-
         [HttpPost]
         [Route(nameof(Login))]
-        public async Task<IActionResult> Login(UserLoginModel userModel, string returnUrl = null)
+        public async Task<ActionResult<LoginOutputModel>> Login(UserLoginModel userModel, string returnUrl = null)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(userModel);
-            }
-
             try
             {
-                var user = await identityService.LoginAsync(userModel);
-                return Ok(new LoginOutputModel(user.Token));
+                return Ok(await this.identityService.LoginAsync(userModel));
             }
             catch (InvalidCredentialException)
-            { 
-                ModelState.AddModelError("", "Invalid UserName or Password");
-                return View();
+            {
+                return BadRequest("Invalid UserName or Password");
             }
-        }
-
-        [HttpGet]
-        [Route(nameof(ChangePassword))]
-        public IActionResult ChangePassword()
-        {
-            return View();
         }
 
         [HttpPost]
@@ -104,5 +72,9 @@
                 return BadRequest(errors);
             }
         }
+
+        [Route("Names")]
+        public async Task<IEnumerable<UserGetModel>> GetUserNames([FromQuery]IEnumerable<string> ids)
+            => await identityService.GetUserNames(ids);
     }
 }

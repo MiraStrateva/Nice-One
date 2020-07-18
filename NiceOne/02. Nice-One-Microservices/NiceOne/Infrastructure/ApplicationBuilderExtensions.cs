@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
-namespace NiceOne.Infrastructure
+﻿namespace NiceOne.Infrastructure
 {
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
+    using NiceOne.Services;
+    using System.Net;
+    using System.Net.Security;
+
     public static class ApplicationBuilderExtensions
     {
         public static IApplicationBuilder UseWebService(
@@ -16,9 +19,8 @@ namespace NiceOne.Infrastructure
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
             app
-                .UseHttpsRedirection()
                 .UseStaticFiles()
                 .UseRouting()
                 .UseCors(options => options
@@ -41,6 +43,13 @@ namespace NiceOne.Infrastructure
             var db = serviceProvider.GetRequiredService<DbContext>();
 
             db.Database.Migrate();
+
+            var seeders = serviceProvider.GetServices<IDataSeeder>();
+
+            foreach (var seeder in seeders)
+            {
+                seeder.SeedData();
+            }
 
             return app;
         }

@@ -2,7 +2,7 @@
 {
     using NiceOne.Place.Data;
     using NiceOne.Place.Data.Entities;
-    using NiceOne.Place.DTOs.Places;
+    using NiceOne.Place.Models.Places;
     using NiceOne.Services;
     using System.Collections.Generic;
     using System.Threading.Tasks;

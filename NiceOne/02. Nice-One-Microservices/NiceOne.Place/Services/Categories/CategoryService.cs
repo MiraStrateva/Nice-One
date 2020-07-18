@@ -5,7 +5,7 @@
 
     using NiceOne.Place.Data;
     using NiceOne.Place.Data.Entities;
-    using NiceOne.Place.DTOs.Categories;
+    using NiceOne.Place.Models.Categories;
     using NiceOne.Services;
     using System.Collections.Generic;
     using System.Linq;
@@ -36,9 +36,9 @@
                 })
                 .ToArrayAsync();
 
-        public string GetCategoryName(int categoryId)
+        public string GetCategoryName(int id)
             => this.Data.Categories
-                .FirstOrDefault(c => c.Id == categoryId).Name;
+                .FirstOrDefault(c => c.Id == id).Name;
 
         public async Task<CategoryGetModel> GetByIdAsync(int categoryId)
             => await this.mapper

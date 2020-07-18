@@ -2,7 +2,7 @@
 {
     using NiceOne.Place.Data;
     using NiceOne.Place.Data.Entities;
-    using NiceOne.Place.DTOs.Categories;
+    using NiceOne.Place.Models.Categories;
     using NiceOne.Services;
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -11,7 +11,7 @@
     {
         Task<IEnumerable<CategoryGetModel>> GetAsync();
         Task<IEnumerable<CategoryGetModel>> GetAllOrderedByPlacesAsync();
-        string GetCategoryName(int categoryId);
+        string GetCategoryName(int id);
         Task<CategoryGetModel> GetByIdAsync(int categoryId);
         Task DeleteAsync(int id);
     }

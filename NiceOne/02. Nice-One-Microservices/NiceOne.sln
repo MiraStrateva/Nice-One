@@ -9,7 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NiceOne.Identity", "NiceOne
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NiceOne", "NiceOne\NiceOne.csproj", "{B07479E7-BC2E-4087-B531-37F635334111}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiceOne.Location", "NiceOne.Location\NiceOne.Location.csproj", "{34353BFA-4BFF-4B1A-959A-D7C53CE917BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NiceOne.Location", "NiceOne.Location\NiceOne.Location.csproj", "{34353BFA-4BFF-4B1A-959A-D7C53CE917BA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NiceOne.Client", "NiceOne.Client\NiceOne.Client.csproj", "{AD187998-E74E-4E6F-AA89-D1EA970D4DC0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NiceOne.Gateway", "NiceOne.Gateway\NiceOne.Gateway.csproj", "{7188D1FC-E5AD-45BF-8CC3-0E8517B27AF4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{34353BFA-4BFF-4B1A-959A-D7C53CE917BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34353BFA-4BFF-4B1A-959A-D7C53CE917BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34353BFA-4BFF-4B1A-959A-D7C53CE917BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD187998-E74E-4E6F-AA89-D1EA970D4DC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD187998-E74E-4E6F-AA89-D1EA970D4DC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD187998-E74E-4E6F-AA89-D1EA970D4DC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD187998-E74E-4E6F-AA89-D1EA970D4DC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7188D1FC-E5AD-45BF-8CC3-0E8517B27AF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7188D1FC-E5AD-45BF-8CC3-0E8517B27AF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7188D1FC-E5AD-45BF-8CC3-0E8517B27AF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7188D1FC-E5AD-45BF-8CC3-0E8517B27AF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
