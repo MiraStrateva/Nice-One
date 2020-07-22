@@ -16,10 +16,10 @@
         protected BaseService(TDBContext data) 
             => Data = data;
 
-        public async Task<TEntity> FindAsync(int id)
+        public virtual async Task<TEntity> FindAsync(int id)
             => await Data.Set<TEntity>().FindAsync(id);
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync(
+        public virtual async Task<IEnumerable<TEntity>> GetAllAsync(
             Expression<Func<TEntity, bool>> search = null,
             Expression<Func<TEntity, object>> orderBy = null, 
             bool ascending = true)
@@ -41,19 +41,19 @@
             return await query.ToListAsync<TEntity>();
         }
 
-        public async Task SaveAsync(TEntity entity)
+        public virtual async Task SaveAsync(TEntity entity)
         {
             this.Data.Update(entity);
             await this.Data.SaveChangesAsync();
         }
 
-        public async Task CreateAsync(TEntity entity)
+        public virtual async Task CreateAsync(TEntity entity)
         {
             Data.Set<TEntity>().Add(entity);
             await Data.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(TEntity entity)
+        public virtual async Task DeleteAsync(TEntity entity)
         {
             Data.Set<TEntity>().Remove(entity);
             await Data.SaveChangesAsync();

@@ -1,5 +1,6 @@
 ﻿namespace NiceOne.Place.Services.Places
 {
+    using NiceOne.Messages.Location;
     using NiceOne.Place.Data;
     using NiceOne.Place.Data.Entities;
     using NiceOne.Place.Models.Places;
@@ -15,5 +16,7 @@
         Task<IEnumerable<PlaceListGetModel>> SearchPlacesAsync(string search);
         Task<PlaceGetModel> GetByIdAsync(int placeId);
         Task DeleteAsync(int id);
+        Task UpdateCountryName(CountryUpdatedMessage message);
+        Task UpdateCityName(CityUpdatedMessage message);
     }
 }

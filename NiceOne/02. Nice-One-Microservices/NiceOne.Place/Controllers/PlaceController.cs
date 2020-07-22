@@ -25,8 +25,8 @@
         private readonly ICurrentUserService currentUserService;
 
         public PlaceController(IMapper mapper,
-            IPlaceService placeService, 
-            ICategoryService categoryService, 
+            IPlaceService placeService,
+            ICategoryService categoryService,
             IFeedbackService feedbackService,
             ICurrentUserService currentUserService)
         {
@@ -42,7 +42,7 @@
             => Ok(await this.placeService.GetByIdAsync(Id));
 
         [HttpPost]
-        [Authorize]
+        //[Authorize]
         [Route(nameof(Create))]
         public async Task<IActionResult> Create(PlaceSetModel placeSetModel)
         {
@@ -98,7 +98,7 @@
             => Ok(await this.placeService.GetByUserAsync(this.currentUserService.UserId));
 
         [HttpPost]
-        [Route(nameof(SearchPlaces))]
+        [Route(nameof(SearchPlaces) + PathSeparator + Search)]
         public async Task<IActionResult> SearchPlaces(string search = null)
         {
             IEnumerable<PlaceListGetModel> places = default;

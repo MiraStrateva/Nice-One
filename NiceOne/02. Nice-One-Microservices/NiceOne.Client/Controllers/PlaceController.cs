@@ -143,9 +143,9 @@
             return Json(new SelectList(cityList, "Id", "Name"));
         }
 
-        public IActionResult AddFeedback(int id)
+        public IActionResult AddFeedback(int placeId)
         {
-            var model = new FeedbackSetModel { PlaceId = id };
+            var model = new FeedbackSetModel { PlaceId = placeId };
             return View(model);
         }
 

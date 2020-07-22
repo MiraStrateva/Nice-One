@@ -1,6 +1,8 @@
 ﻿namespace NiceOne.Infrastructure
 {
+    using System;
     using System.Text;
+    using MassTransit;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
@@ -42,7 +44,8 @@
 
         public static IServiceCollection AddTokenAuthentication(
             this IServiceCollection services,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            JwtBearerEvents events = null)
         {
             var secret = configuration
                 .GetSection(nameof(ApplicationSettings))
@@ -67,10 +70,38 @@
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };
+
+                    if (events != null)
+                    {
+                        bearer.Events = events;
+                    }
                 });
 
             services.AddHttpContextAccessor();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddMessaging(
+            this IServiceCollection services, 
+            params Type[] consumers)
+        {
+            services
+                .AddMassTransit(mt =>
+                {
+                    consumers.ForEach(consumer => mt.AddConsumer(consumer));
+                    mt.AddBus(bus => Bus.Factory.CreateUsingRabbitMq(cfg =>
+                    {
+                        cfg.Host("localhost");
+
+                        consumers.ForEach(consumer => cfg.ReceiveEndpoint(consumer.FullName, endpoint =>
+                        {
+                            endpoint.ConfigureConsumer(bus, consumer);
+                        }));
+                    }));
+                })
+                .AddMassTransitHostedService();
 
             return services;
         }

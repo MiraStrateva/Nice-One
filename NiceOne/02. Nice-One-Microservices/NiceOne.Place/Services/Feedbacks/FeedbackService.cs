@@ -1,7 +1,9 @@
 ﻿namespace NiceOne.Place.Services.Feedbacks
 {
     using AutoMapper;
+    using MassTransit;
     using Microsoft.EntityFrameworkCore;
+    using NiceOne.Messages.Place;
     using NiceOne.Place.Data;
     using NiceOne.Place.Data.Entities;
     using NiceOne.Place.Models.Feedbacks;
@@ -13,9 +15,14 @@
     public class FeedbackService : BaseService<NiceOnePlaceDbContext, Feedback>, IFeedbackService
     {
         private readonly IMapper mapper;
-        public FeedbackService(NiceOnePlaceDbContext data, IMapper mapper)
+        private readonly IBus publisher;
+
+        public FeedbackService(NiceOnePlaceDbContext data, IMapper mapper, IBus publisher)
             : base(data)
-            => this.mapper = mapper;
+        {
+            this.mapper = mapper;
+            this.publisher = publisher;
+        }
 
         public async Task DeleteAsync(int id)
         {
@@ -39,5 +46,15 @@
                 .ProjectTo<FeedbackGetModel>(this.Data.Feedbacks)
                 .Where(f => f.UserId == userId)
                 .ToListAsync();
+
+        public override async Task CreateAsync(Feedback entity)
+        {
+            await base.CreateAsync(entity);
+            await publisher.Publish(new FeedbackCreatedMessage
+            {
+                Rating = entity.Rating,
+                Text = entity.Text
+            });
+        }
     }
 }

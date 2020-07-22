@@ -10,6 +10,7 @@ namespace NiceOne.Location
     using AutoMapper;
     using NiceOne.Location.Services.Countries;
     using NiceOne.Location.Services.Cities;
+    using MassTransit;
 
     public class Startup
     {
@@ -25,7 +26,8 @@ namespace NiceOne.Location
                 .AddWebService<NiceOneLocationDbContext>(this.Configuration)
                 .AddAutoMapper(typeof(Startup))
                 .AddTransient<ICountryService, CountryService>()
-                .AddTransient<ICityService, CityService>();
+                .AddTransient<ICityService, CityService>()
+                .AddMessaging();
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
             => app

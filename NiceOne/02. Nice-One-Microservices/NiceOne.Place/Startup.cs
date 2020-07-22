@@ -1,7 +1,6 @@
 namespace NiceOne.Place
 {
     using AutoMapper;
-
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
@@ -10,9 +9,11 @@ namespace NiceOne.Place
     using NiceOne.Infrastructure;
     using NiceOne.Place.Data;
     using NiceOne.Place.Infrastructure;
+    using NiceOne.Place.Messages;
     using NiceOne.Place.Services.Categories;
     using NiceOne.Place.Services.Feedbacks;
     using NiceOne.Place.Services.Places;
+    using System;
 
     public class Startup
     {
@@ -29,7 +30,8 @@ namespace NiceOne.Place
                 .AddAutoMapper(typeof(Startup))
                 .AddTransient<ICategoryService, CategoryService>()
                 .AddTransient<IPlaceService, PlaceService>()
-                .AddTransient<IFeedbackService, FeedbackService>();
+                .AddTransient<IFeedbackService, FeedbackService>()
+                .AddMessaging(new Type[] { typeof(CountryUpdatedConsumer), typeof(CityUpdatedConsumer)});
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) 
             => app

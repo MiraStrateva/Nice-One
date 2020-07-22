@@ -1,7 +1,8 @@
 ﻿namespace NiceOne.Place.Services.Places
 {
+    using Microsoft.Data.SqlClient;
     using Microsoft.EntityFrameworkCore;
-
+    using NiceOne.Messages.Location;
     using NiceOne.Place.Data;
     using NiceOne.Place.Data.Entities;
     using NiceOne.Place.Models.Places;
@@ -78,7 +79,7 @@
                     CategoryName = p.Category.Name,
                     CityId = p.CityId,
                     CityName = p.CityName,
-                   // CountryId = p.City.CountryId,
+                    CountryId = p.CountryId,
                     CountryName = p.CountryName,
                     Rating = p.Feedbacks.Select(f => f.Rating).Average(),
                     FeedbackCount = p.Feedbacks.Count(),
@@ -140,6 +141,26 @@
                     FeedbackCount = p.Feedbacks.Count
                 })
                 .ToListAsync();
+        }
+
+        public async Task UpdateCountryName(CountryUpdatedMessage message)
+        {
+            string updateCountryQuery = "Update Places Set CountryName = @Name Where CountryId = @Id";
+            await Data.Database
+                .ExecuteSqlCommandAsync(updateCountryQuery, 
+                    new SqlParameter("@Name", message.CountryName), new SqlParameter("@Id", message.CountryId));
+
+            await Data.SaveChangesAsync();
+        }
+
+        public async Task UpdateCityName(CityUpdatedMessage message)
+        {
+            string updateCityQuery = "Update Places Set CityName = @Name Where CityId = @Id";
+            await Data.Database
+                .ExecuteSqlCommandAsync(updateCityQuery,
+                    new SqlParameter("@Name", message.CityName), new SqlParameter("@Id", message.CityId));
+
+            await Data.SaveChangesAsync();
         }
     }
 }

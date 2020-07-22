@@ -1,10 +1,12 @@
 ﻿namespace NiceOne.Location.Services.Cities
 {
     using AutoMapper;
+    using MassTransit;
     using Microsoft.EntityFrameworkCore;
     using NiceOne.Location.Data;
     using NiceOne.Location.Data.Entities;
     using NiceOne.Location.Models.Cities;
+    using NiceOne.Messages.Location;
     using NiceOne.Services;
     using System.Collections.Generic;
     using System.Linq;
@@ -13,11 +15,13 @@
     public class CityService : BaseService<NiceOneLocationDbContext, City>, ICityService
     {
         private readonly IMapper mapper;
-        public CityService(NiceOneLocationDbContext data, IMapper mapper)
+        private readonly IBus publisher;
+        public CityService(NiceOneLocationDbContext data, IMapper mapper, IBus publisher)
             : base(data)
         {
             this.Data = data;
             this.mapper = mapper;
+            this.publisher = publisher;
         }
 
         public async Task DeleteAsync(int id)
@@ -37,5 +41,16 @@
                 .Where(c => c.CountryId == countryId)
                 .OrderBy(c => c.Name)
                 .ToListAsync();
+
+        public override async Task SaveAsync(City entity)
+        {
+            await base.SaveAsync(entity);
+
+            await this.publisher.Publish(new CityUpdatedMessage
+            {
+                CityId = entity.Id,
+                CityName = entity.Name
+            });
+        }
     }
 }

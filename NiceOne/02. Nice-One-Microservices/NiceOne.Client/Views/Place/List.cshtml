@@ -11,7 +11,7 @@
 @if (User.Identity.IsAuthenticated)
 {
 <p>
-    @Html.ActionLink("Create New", "Create", "Place", new { id = @ViewBag.CategoryId }, new { Area = "" })
+    @Html.ActionLink("Create New", "Create", "Place", new { categoryId = @ViewBag.CategoryId }, new { Area = "" })
 </p>
 }
 <table class="table">

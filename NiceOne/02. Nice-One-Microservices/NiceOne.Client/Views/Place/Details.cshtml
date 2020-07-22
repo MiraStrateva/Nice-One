@@ -76,7 +76,7 @@
         <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
         <br />
     }
-    @Html.ActionLink("Add Feedback", "AddFeedback", "Place", new { id = @Model.Id})
+    @Html.ActionLink("Add Feedback", "AddFeedback", "Place", new { placeId = @Model.Id})
     <br />
     @Html.ActionLink("Back to List", "ByCategory", "Place", new { id = @Model.CategoryId })
 </div>

@@ -8,5 +8,6 @@
     {
         public const string PathSeparator = "/";
         public const string Id = "{id}";
+        public const string Search = "{search}";
     }
 }

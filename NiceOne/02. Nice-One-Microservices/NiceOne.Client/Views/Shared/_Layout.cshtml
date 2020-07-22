@@ -22,7 +22,7 @@
                     <partial name="_SearchPartial" />
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
-                        @if (this.User.Identity.IsAuthenticated)    
+                        @if (this.User.Identity.IsAuthenticated)
                         {
                             @if (this.User.IsAdministrator())
                             {
@@ -54,12 +54,17 @@
             </div>
         </nav>
     </header>
+    <div class="row">
+        <div class="col-12">&nbsp;</div>
+        <div class="col-12">
+            <ul id="messagesList" class="text-primary"></ul>
+        </div>
+    </div>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
-
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2020 - NiceOne.Place - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
@@ -68,6 +73,8 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/feedback.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
