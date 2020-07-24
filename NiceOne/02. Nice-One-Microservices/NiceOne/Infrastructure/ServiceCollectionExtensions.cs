@@ -4,6 +4,7 @@
     using System.Text;
     using MassTransit;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
@@ -32,7 +33,7 @@
            => services
                .AddScoped<DbContext, TDbContext>()
                .AddDbContext<TDbContext>(options => options
-                   .UseSqlServer(configuration.GetConnectionString("myconn")));
+                   .UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
         public static IServiceCollection AddApplicationSettings(
             this IServiceCollection services,
@@ -93,7 +94,11 @@
                     consumers.ForEach(consumer => mt.AddConsumer(consumer));
                     mt.AddBus(bus => Bus.Factory.CreateUsingRabbitMq(cfg =>
                     {
-                        cfg.Host("localhost");
+                        cfg.Host("rabbitmq", host =>
+                        {
+                            host.Username("rabbitmq");
+                            host.Password("rabbitmq");
+                        });
 
                         consumers.ForEach(consumer => cfg.ReceiveEndpoint(consumer.FullName, endpoint =>
                         {

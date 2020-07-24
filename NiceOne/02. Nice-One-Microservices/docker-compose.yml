@@ -1,0 +1,146 @@
+version: "3.8"
+
+services:
+
+    data:
+        container_name: sqlserver
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        ports: 
+            - "1433:1433"
+        environment:
+            - ACCEPT_EULA=Y
+            - SA_PASSWORD=yourStrongPassword12!@
+        volumes: 
+            - sqldata:/var/opt/mssql 
+        networks: 
+            - niceone-network
+
+    messages:
+        container_name: rabbitmq
+        image: rabbitmq:3-management
+        ports:
+            - "15672:15672"
+            - "5672:5672"
+        hostname: "rabbitmq"
+        environment:
+            - RABBITMQ_ERLANG_COOKIE=Rand0mR4bbitMqCo0k1e
+            - RABBITMQ_DEFAULT_USER=rabbitmq
+            - RABBITMQ_DEFAULT_PASS=rabbitmq
+        networks: 
+            - niceone-network
+
+    identity:
+        container_name: identity
+        build:
+            context: ./
+            dockerfile: ./NiceOne.Identity/Dockerfile
+        ports: 
+            - "5000:80"
+        env_file: NiceOne/Common.env
+        environment:
+            - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=NiceOneIdentityDatabase;User Id=sa; Password=yourStrongPassword12!@;MultipleActiveResultSets=true
+        restart: on-failure
+        volumes:
+            - ./.aspnet/identity/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
+        networks: 
+            - niceone-network
+        depends_on:
+            - data
+
+    place:
+        container_name: place
+        build:
+            context: ./
+            dockerfile: ./NiceOne.Place/Dockerfile
+        ports: 
+            - "5002:80"
+        env_file: NiceOne/Common.env
+        environment:
+            - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=NiceOnePlaceDatabase;User Id=sa; Password=yourStrongPassword12!@;MultipleActiveResultSets=true
+        restart: on-failure
+        volumes:
+            - ./.aspnet/place/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
+        networks: 
+            - niceone-network
+        depends_on:
+            - data
+
+    location:
+        container_name: location
+        build:
+            context: ./
+            dockerfile: ./NiceOne.Location/Dockerfile
+        ports: 
+            - "5004:80"
+        env_file: NiceOne/Common.env
+        environment:
+            - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=NiceOneLocationDatabase;User Id=sa; Password=yourStrongPassword12!@;MultipleActiveResultSets=true
+        restart: on-failure
+        volumes:
+            - ./.aspnet/location/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
+        networks: 
+            - niceone-network
+        depends_on:
+            - data
+
+    gateway:
+        container_name: gateway
+        build:
+            context: ./
+            dockerfile: ./NiceOne.Gateway/Dockerfile
+        ports: 
+            - "5006:80"
+        env_file: NiceOne/Common.env
+        environment:
+            - ServiceEndpoints__Identity=http://identity
+            - ServiceEndpoints__Place=http://place
+        restart: on-failure
+        volumes:
+            - ./.aspnet/place/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
+        networks:
+            - niceone-network
+        depends_on:
+            - identity
+            - place
+
+    client:
+        container_name: client
+        build:
+            context: ./
+            dockerfile: ./NiceOne.Client/Dockerfile
+        ports: 
+            - "5008:80"
+        env_file: NiceOne/Common.env
+        environment:
+            - ServiceEndpoints__Identity=http://identity
+            - ServiceEndpoints__Place=http://place
+            - ServiceEndpoints__Location=http://location
+            - ServiceEndpoints__Gateway=http://gateway         
+        restart: on-failure
+        volumes:
+            - ./.aspnet/client/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
+        networks: 
+            - niceone-network
+        depends_on:
+            - gateway
+            - location
+
+    notifications:
+        container_name: notifications
+        build:
+            context: ./
+            dockerfile: ./NiceOne.Notifications/Dockerfile
+        ports: 
+            - "5010:80"
+        env_file: NiceOne/Common.env
+        restart: on-failure
+        volumes:
+            - ./.aspnet/notifications/DataProtection-Keys:/root/.aspnet/DataProtection-Keys
+        networks: 
+            - niceone-network
+
+networks:
+    niceone-network:
+
+volumes:
+    sqldata:

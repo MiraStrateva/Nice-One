@@ -36,7 +36,7 @@ namespace NiceOne.Notifications
             app
                 .UseRouting()
                 .UseCors(options => options
-                    .WithOrigins("https://localhost:44388")
+                    .WithOrigins("http://localhost:5008")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials())

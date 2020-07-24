@@ -21,7 +21,7 @@
 
         public void SeedData()
         {
-            if (this.roleManager.Roles.Any())
+            if (this.userManager.Users.Any())
             {
                 return;
             }
