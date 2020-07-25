@@ -3,6 +3,7 @@
     using AutoMapper;
     using MassTransit;
     using Microsoft.EntityFrameworkCore;
+    using NiceOne.Data.Models;
     using NiceOne.Messages.Place;
     using NiceOne.Place.Data;
     using NiceOne.Place.Data.Entities;
@@ -47,14 +48,21 @@
                 .Where(f => f.UserId == userId)
                 .ToListAsync();
 
-        public override async Task CreateAsync(Feedback entity)
+        public override async Task CreateAsync(Feedback entity, params Message[] messages)
         {
-            await base.CreateAsync(entity);
-            await publisher.Publish(new FeedbackCreatedMessage
+            var messageData = new FeedbackCreatedMessage
             {
                 Rating = entity.Rating,
                 Text = entity.Text
-            });
+            };
+
+            var message = new Message(messageData);
+
+            await base.CreateAsync(entity, message);
+            
+            await publisher.Publish(messageData);
+
+            await this.MarkMessageAsPublished(message.Id);
         }
     }
 }

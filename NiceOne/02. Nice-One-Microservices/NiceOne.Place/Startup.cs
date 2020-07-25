@@ -31,7 +31,8 @@ namespace NiceOne.Place
                 .AddTransient<ICategoryService, CategoryService>()
                 .AddTransient<IPlaceService, PlaceService>()
                 .AddTransient<IFeedbackService, FeedbackService>()
-                .AddMessaging(new Type[] { typeof(CountryUpdatedConsumer), typeof(CityUpdatedConsumer)});
+                .AddMessaging(this.Configuration,
+                            new Type[] { typeof(CountryUpdatedConsumer), typeof(CityUpdatedConsumer)});
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env) 
             => app

@@ -27,7 +27,7 @@ namespace NiceOne.Location
                 .AddAutoMapper(typeof(Startup))
                 .AddTransient<ICountryService, CountryService>()
                 .AddTransient<ICityService, CityService>()
-                .AddMessaging();
+                .AddMessaging(this.Configuration);
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
             => app

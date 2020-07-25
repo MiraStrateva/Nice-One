@@ -3,6 +3,7 @@
     using AutoMapper;
     using MassTransit;
     using Microsoft.EntityFrameworkCore;
+    using NiceOne.Data.Models;
     using NiceOne.Location.Data;
     using NiceOne.Location.Data.Entities;
     using NiceOne.Location.Models.Cities;
@@ -10,6 +11,7 @@
     using NiceOne.Services;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Security;
     using System.Threading.Tasks;
 
     public class CityService : BaseService<NiceOneLocationDbContext, City>, ICityService
@@ -42,15 +44,21 @@
                 .OrderBy(c => c.Name)
                 .ToListAsync();
 
-        public override async Task SaveAsync(City entity)
+        public override async Task SaveAsync(City entity, Message[] messages)
         {
-            await base.SaveAsync(entity);
-
-            await this.publisher.Publish(new CityUpdatedMessage
+            var messageData = new CityUpdatedMessage
             {
                 CityId = entity.Id,
                 CityName = entity.Name
-            });
+            };
+
+            var message = new Message(messageData);
+
+            await base.SaveAsync(entity, message);
+
+            await this.publisher.Publish(messageData);
+
+            await this.MarkMessageAsPublished(message.Id);
         }
     }
 }

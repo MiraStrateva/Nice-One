@@ -1,7 +1,7 @@
 ﻿namespace NiceOne.Services
 {
     using Microsoft.EntityFrameworkCore;
-
+    using NiceOne.Data.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -41,14 +41,24 @@
             return await query.ToListAsync<TEntity>();
         }
 
-        public virtual async Task SaveAsync(TEntity entity)
+        public virtual async Task SaveAsync(TEntity entity, params Message[] messages)
         {
+            foreach (var message in messages)
+            {
+                this.Data.Add(message);
+            }
+
             this.Data.Update(entity);
             await this.Data.SaveChangesAsync();
         }
 
-        public virtual async Task CreateAsync(TEntity entity)
+        public virtual async Task CreateAsync(TEntity entity, params Message[] messages)
         {
+            foreach (var message in messages)
+            {
+                this.Data.Add(message);
+            }
+
             Data.Set<TEntity>().Add(entity);
             await Data.SaveChangesAsync();
         }
@@ -56,6 +66,14 @@
         public virtual async Task DeleteAsync(TEntity entity)
         {
             Data.Set<TEntity>().Remove(entity);
+            await Data.SaveChangesAsync();
+        }
+
+        public async Task MarkMessageAsPublished(int id)
+        {
+            var message = await Data.FindAsync<Message>(id);
+            message.MarkAsPublished();
+
             await Data.SaveChangesAsync();
         }
     }

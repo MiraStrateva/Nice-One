@@ -10,6 +10,7 @@
     using NiceOne.Messages.Location;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using NiceOne.Data.Models;
 
     public class CountryService : BaseService<NiceOneLocationDbContext, Country>, ICountryService
     {
@@ -38,15 +39,21 @@
             await this.DeleteAsync(country);
         }
 
-        public override async Task SaveAsync(Country entity)
+        public override async Task SaveAsync(Country entity, Message[] messages)
         {
-            await base.SaveAsync(entity);
-
-            await this.publisher.Publish(new CountryUpdatedMessage 
+            var messageData = new CountryUpdatedMessage
             {
                 CountryId = entity.Id,
                 CountryName = entity.Name
-            });
+            };
+
+            var message = new Message(messageData);
+
+            await base.SaveAsync(entity, message);
+
+            await this.publisher.Publish(messageData);
+
+            await this.MarkMessageAsPublished(message.Id);
         }
     }
 }

@@ -23,7 +23,8 @@ namespace NiceOne.Notifications
                 .AddTokenAuthentication(
                     this.Configuration,
                     JwtConfiguration.BearerEvents)
-                .AddMessaging(typeof(FeedbackCreatedConsumer))
+                .AddMessaging(this.Configuration,
+                            typeof(FeedbackCreatedConsumer))
                 .AddSignalR();
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -2,6 +2,8 @@
 {
     using System;
     using System.Text;
+    using GreenPipes;
+    using Hangfire;
     using MassTransit;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Identity;
@@ -9,6 +11,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.IdentityModel.Tokens;
+    using NiceOne.Messages;
     using Services.Identity;
 
     public static class ServiceCollectionExtensions
@@ -16,12 +19,13 @@
         public static IServiceCollection AddWebService<TDbContext>(this IServiceCollection services,
            IConfiguration configuration)
            where TDbContext : DbContext
-        { 
-           services
-                .AddDatabase<TDbContext>(configuration)
-                .AddApplicationSettings(configuration)
-                .AddTokenAuthentication(configuration)
-                .AddControllers();
+        {
+            services
+                 .AddDatabase<TDbContext>(configuration)
+                 .AddApplicationSettings(configuration)
+                 .AddTokenAuthentication(configuration)
+                 .AddHealth(configuration)
+                 .AddControllers();
 
            return services;
         }
@@ -33,8 +37,15 @@
            => services
                .AddScoped<DbContext, TDbContext>()
                .AddDbContext<TDbContext>(options => options
-                   .UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-
+                   .UseSqlServer(configuration.GetDefaultConnectionString(),
+                   sqlServerOptionsAction: sqlOptions =>
+                    {
+                        sqlOptions.EnableRetryOnFailure(
+                           maxRetryCount: 10,
+                           maxRetryDelay: TimeSpan.FromSeconds(30),
+                           errorNumbersToAdd: null);
+                   }));
+  
         public static IServiceCollection AddApplicationSettings(
             this IServiceCollection services,
             IConfiguration configuration)
@@ -85,7 +96,8 @@
         }
 
         public static IServiceCollection AddMessaging(
-            this IServiceCollection services, 
+            this IServiceCollection services,
+            IConfiguration configuration,
             params Type[] consumers)
         {
             services
@@ -100,13 +112,44 @@
                             host.Password("rabbitmq");
                         });
 
-                        consumers.ForEach(consumer => cfg.ReceiveEndpoint(consumer.FullName, endpoint =>
-                        {
-                            endpoint.ConfigureConsumer(bus, consumer);
-                        }));
+                        cfg.UseHealthCheck(bus);
+
+                        consumers.ForEach(consumer => cfg
+                            .ReceiveEndpoint(consumer.FullName, endpoint =>
+                            {
+                                endpoint.PrefetchCount = 7; 
+                                endpoint.UseMessageRetry(x => x.Interval(7, 77));
+                                endpoint.ConfigureConsumer(bus, consumer);
+                            }));
                     }));
                 })
                 .AddMassTransitHostedService();
+
+            services
+                .AddHangfire(config => config
+                    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                    .UseSimpleAssemblyNameTypeSerializer()
+                    .UseRecommendedSerializerSettings()
+                    .UseSqlServerStorage(configuration.GetDefaultConnectionString()));
+
+            services.AddHangfireServer();
+
+            services.AddHostedService<MessagesHostedService>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddHealth(
+            this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            var healthChecks = services.AddHealthChecks();
+
+            healthChecks
+                .AddSqlServer(configuration.GetDefaultConnectionString());
+
+            healthChecks
+                .AddRabbitMQ(rabbitConnectionString: "amqp://rabbitmq:rabbitmq@rabbitmq/");
 
             return services;
         }

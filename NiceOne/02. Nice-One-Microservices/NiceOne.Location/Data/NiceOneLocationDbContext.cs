@@ -1,10 +1,11 @@
 ﻿namespace NiceOne.Location.Data
 {
     using Microsoft.EntityFrameworkCore;
+    using NiceOne.Data;
     using NiceOne.Location.Data.Entities;
     using System.Reflection;
 
-    public class NiceOneLocationDbContext : DbContext
+    public class NiceOneLocationDbContext : MessageDbContext
     {
         public NiceOneLocationDbContext(DbContextOptions<NiceOneLocationDbContext> options)
             : base(options)
@@ -15,10 +16,6 @@
 
         public DbSet<City> Cities { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-            base.OnModelCreating(builder);
-        }
+        protected override Assembly ConfigurationsAssembly => Assembly.GetExecutingAssembly();
     }
 }

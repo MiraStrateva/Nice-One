@@ -1,12 +1,12 @@
 ﻿namespace NiceOne.Place.Data
 {
+    using System.Reflection;
+    
     using Microsoft.EntityFrameworkCore;
-
+    using NiceOne.Data;
     using NiceOne.Place.Data.Entities;
 
-    using System.Reflection;
-
-    public class NiceOnePlaceDbContext : DbContext
+    public class NiceOnePlaceDbContext : MessageDbContext
     {
         public NiceOnePlaceDbContext(DbContextOptions<NiceOnePlaceDbContext> options)
             : base(options)
@@ -19,10 +19,6 @@
 
         public DbSet<Feedback> Feedbacks { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder builder)
-        {
-            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-            base.OnModelCreating(builder);
-        }
+        protected override Assembly ConfigurationsAssembly => Assembly.GetExecutingAssembly();
     }
 }
